@@ -1,0 +1,17 @@
+# Rojo / Studio
+*.rbxl
+*.rbxlx
+*.rbxm
+*.rbxmx
+sourcemap.json
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local executor output
+workspace/
+ZetaPro/configs/
+ZetaPro/icons/
