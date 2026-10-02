@@ -3,7 +3,7 @@
 	Entry point and public API.
 
 	Executor:
-		local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/ZETA-ORG/ZetaPro/main/src/init.luau"))()
+		local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
 	Roblox Studio / Rojo:
 		local Zeta = require(path.to.ZetaPro)
@@ -16,7 +16,7 @@
 ]]
 
 local VERSION = "1.0.0"
-local DEFAULT_BASE = "https://raw.githubusercontent.com/ZETA-ORG/ZetaPro/main/src/"
+local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/"
 
 local MODULES = {
 	"Core/Signal", "Core/State", "Core/Capabilities", "Core/Utility", "Core/Config", "Core/Theme",
