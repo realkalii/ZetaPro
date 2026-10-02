@@ -1,5 +1,5 @@
 -- Minimal ZETA Pro UI.
-local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/ZETA-ORG/ZetaPro/main/src/init.luau"))()
+local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
 local Window = Zeta:CreateWindow({
 	Title = "ZETA Pro",
