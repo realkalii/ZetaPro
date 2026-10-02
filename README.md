@@ -7,7 +7,7 @@
 ![Version](https://img.shields.io/badge/version-1.0.0-white?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square)
 ![Luau](https://img.shields.io/badge/Luau-typed-blue?style=flat-square)
-![GitHub](https://img.shields.io/badge/GitHub-ZETA--ORG%2FZetaPro-black?style=flat-square&logo=github)
+![GitHub](https://img.shields.io/badge/GitHub-realkalii%2FZetaPro-black?style=flat-square&logo=github)
 
 </div>
 
@@ -38,7 +38,7 @@ ZETA Pro is a minimal, dark, modular UI library for Roblox / Luau. The UX is fam
 **Executor**
 ```lua
 local Zeta = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/ZETA-ORG/ZetaPro/main/src/init.luau"
+    "https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"
 ))()
 ```
 Modules are downloaded in parallel and cached for the session. Use `getgenv().ZETA_BASE = "https://.../src/"` to load from a fork or a local server. Re-running the script cleanly unloads the previous instance.
