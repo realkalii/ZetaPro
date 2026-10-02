@@ -679,6 +679,9 @@ return function(import)
 			GroupTransparency = 1,
 			ZIndex = 2,
 		})
+		-- The popup frame must be destroyed on close: a CanvasGroup's own UIStroke
+		-- stays visible even at GroupTransparency = 1 (this was the stray squares).
+		cleanup:Add(frame)
 
 		local scale = Theme.Scale
 		local rootPosition, rootSize = self.Root.AbsolutePosition, self.Root.Size
