@@ -11,13 +11,11 @@
 
 </div>
 
-<!-- Add a screenshot after your first test run:
+<!-- Screensho:
 ![ZETA Pro](assets/screenshots/preview.png)
 -->
 
 ZETA Pro is a minimal, dark, modular UI library for Roblox / Luau. The UX is familiar to anyone who has used Fluent (window, tabs, sections, components, notifications, acrylic), but the implementation, theme system, icon system, animation layer and API are independent. See `THIRD_PARTY.md`.
-
-> **Status:** V1.0 was written without access to a Roblox runtime. Run `examples/tests.luau` in Studio or your executor first and report anything that breaks.
 
 ## Features
 - Window: drag, optional resize, minimize/restore (hotkey + touch button), search, dialogs, responsive layout, `UIScale` scaling
