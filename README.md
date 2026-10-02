@@ -122,8 +122,5 @@ See [docs/api.md](docs/api.md) for every public method.
 - More built-in icons and a Lucide spritesheet provider
 - Resizable sidebar and collapsible sections
 
-## Contributing
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
-
 ## License
 MIT. A permissive license suits UI libraries: anyone can use, modify and ship it, including in closed-source scripts, as long as the copyright notice stays. Third-party notices: [THIRD_PARTY.md](THIRD_PARTY.md).
