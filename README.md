@@ -11,7 +11,7 @@
 
 </div>
 
-<!-- Screensho:
+<!-- Screenshot:
 ![ZETA Pro](assets/screenshots/preview.png)
 -->
 
@@ -40,12 +40,6 @@ local Zeta = loadstring(game:HttpGet(
 ))()
 ```
 Modules are downloaded in parallel and cached for the session. Use `getgenv().ZETA_BASE = "https://.../src/"` to load from a fork or a local server. Re-running the script cleanly unloads the previous instance.
-
-**Roblox Studio (Rojo)**
-```lua
-local Zeta = require(game.ReplicatedStorage.ZetaPro)
-```
-Clone the repository, run `rojo serve` (the repo ships `default.project.json`), and require the `src` folder.
 
 ## Quick start
 ```lua
@@ -115,13 +109,13 @@ note:Close()
 See [docs/notifications.md](docs/notifications.md).
 
 ## Examples
-`examples/`: `basic`, `complete`, `components`, `themes`, `icons`, `notifications`, `settings`, and `tests` (internal test suite, including 25 create/destroy cycles that check for leaks).
+`examples/`: `basic`, `complete`, `components`, `themes`, `icons`, `notifications`, `settings`.
 
 ## API
 See [docs/api.md](docs/api.md) for every public method.
 
 ## Roadmap
-- Verified-in-game screenshots and a recorded demo
+- Verified in-game screenshots and a recorded demo
 - Optional bundler script that emits a single-file build
 - Keyboard navigation between components
 - Per-component search weighting and tags
