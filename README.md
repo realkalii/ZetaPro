@@ -33,8 +33,7 @@ local Zeta = loadstring(game:HttpGet(
 ```
 
 ## Usage
-
-[Example Script](examples/basic.luau) — [Full API](docs/api.md)
+[Check the docsI](https://realkalii.github.io/ZetaPro-docs)
 
 ## Credits
 
