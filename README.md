@@ -1,6 +1,6 @@
 <div align="center">
 
-![ZETA Pro](assets/screenshots/preview.png)
+![ZETA Pro/img by gab](assets/screenshots/preview.png)
 
 **A dark, modular UI library for Roblox executors.**
 
@@ -18,10 +18,10 @@
 - Tabs, sections and a compact sidebar on smaller windows
 - Button, Toggle, Slider, Dropdown, MultiDropdown, Input, Keybind, Colorpicker, Label, Divider
 - Theme engine with hot swap — Dark, Light, Midnight, Zeta, and custom themes
-- Built-in icon set, image/url icons and replaceable providers
+- Icon families (Lucide, Solar, Geist, Craft, SF Symbols) via Footagesus/Icons
 - Notifications with stacking, progress bar and manual close
 - Acrylic effect with graceful fallback
-- Config export, import and reset — never assumes `writefile`
+- Config export, import and reset `writefile`
 - Full cleanup on `Window:Destroy()`
 
 ## Installation
@@ -33,10 +33,30 @@ local Zeta = loadstring(game:HttpGet(
 ```
 
 ## Usage
-[Check the docsI](https://realkalii.github.io/ZetaPro-docs)
+[Docs](https://realkalii.github.io/ZetaPro-docs)
+
+## Icons
+Icon families include:
+- Lucide
+- Solar
+- Geist
+- Craft
+- SF Symbols
+
+```lua
+Icon = "home"
+Icon = "lucide:settings"
+Icon = "solar:bomb"
+Icon = "geist:code"
+```
+
+`Icon = "home"` keeps using the built-in local set. For `family:name`, the real icons of that family are downloaded once and cached in `ZetaPro/icons/`. If a family cannot be loaded, ZetaPro falls back to its built-in local icons, so the UI never breaks. Solar names carry a variant (`-linear`, `-outline`, `-bold`, `-broken`, `-line-duotone`, `-bold-duotone`); `solar:bomb` picks the first one available, in that order.
+
+The icon sets themselves belong to their authors and keep their own licenses: [Lucide](https://github.com/lucide-icons/lucide), [Craft](https://www.figma.com/community/file/1415718327120418204), [Geist](https://vercel.com/geist/icons), [Solar](https://icones.js.org/collection/solar) and [SF Symbols](https://sf-symbols-one.vercel.app/).
 
 ## Credits
 
 - [dawid-scripts/Fluent](https://github.com/dawid-scripts/Fluent) — UX, component set and API shape inspiration
-- [Lucide](https://lucide.dev) / [Feather](https://feathericons.com) — icon style inspiration (24x24 grid, round-capped strokes). Icons were drawn from scratch as Roblox Frames, no SVG data included
+- [Footagesus/Icons](https://github.com/Footagesus/Icons) — icon families (Lucide, Solar, Geist, Craft, SF Symbols)
+- [Lucide](https://lucide.dev) / [Feather](https://feathericons.com) — icon style inspiration
 
