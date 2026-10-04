@@ -455,102 +455,49 @@ return function(import)
 		for alias, target in ALIASES do
 			DATA[alias] = DATA[target]
 		end
+		local LUCIDE = {}
+		for _, key in ipairs({ "settings", "search", "user", "shield", "shield-check", "code", "terminal", "folder", "trash", "plus", "minus", "check", "x", "info", "copy", "eye", "keyboard", "bell", "zap", "lock", "menu", "grip", "play", "crosshair", "bug", "calendar", "clock", "download", "upload", "link", "mail", "globe", "wifi", "cpu", "database", "image", "music", "camera", "target", "sparkles", "list", "pencil", "save", "users", "bookmark", "tag", "power", "moon", "sun", "arrow-left", "arrow-right", "arrow-up", "arrow-down", "chevron-left", "chevron-right", "chevron-up", "chevron-down", "external-link", "log-out", "crown", "gem", "flame", "rocket", "ghost", "mouse-pointer", "activity", "file", "key", "trophy", "send", "paintbrush", "palette", "layers", "box", "star", "heart", "flag", "map-pin", "smartphone", "monitor", "skull", "gamepad", "maximize" }) do
+			if DATA[key] then
+				LUCIDE[key] = key
+			end
+		end
+		LUCIDE.house = "home"
 		local FAMILIES = {
-			lucide = DATA,
+			lucide = LUCIDE,
 			solar = {
 				settings = "settings",
 				["settings-bold"] = "settings",
-				sword = "sword",
-				swords = "crossed-swords",
 				shield = "shield",
 				target = "target",
 				flame = "flame",
-				zap = "zap",
-				axe = "axe",
 				bomb = "bomb",
-				damage = "damage",
 				health = "health",
-				armor = "armor",
-				hit = "hit",
-				bow = "bow",
-				bullet = "bullet",
-				ammo = "ammo",
-				run = "run",
-				jump = "jump",
-				speed = "speed",
 				rocket = "rocket",
 				radar = "radar",
-				skull = "skull",
-				gem = "gem",
 				box = "box",
 				heart = "heart",
-				sparkles = "sparkles",
 				gamepad = "gamepad",
-				trophy = "trophy",
 			},
 			geist = {
 				code = "code",
-				script = "script",
 				terminal = "terminal",
 				variable = "variable",
-				["file-code"] = "script",
 				api = "api",
 				webhook = "webhook",
 				database = "database",
-				server = "database",
 				cloud = "globe",
-				plugin = "plugin",
-				console = "console",
 				logs = "logs",
-				debugger = "debugger",
-				compile = "compile",
-				memory = "memory",
 			},
 			craft = {
-				smartphone = "smartphone",
-				monitor = "monitor",
 				keyboard = "keyboard",
-				camera = "camera",
 				box = "box",
 				folder = "folder",
-				file = "file",
 				save = "save",
-				pencil = "pencil",
-				palette = "palette",
-				paintbrush = "paintbrush",
-				gamepad = "gamepad",
 				database = "database",
 				key = "key",
-				lock = "lock",
 				unlock = "unlock",
-				mail = "mail",
-				image = "image",
-				music = "music",
 			},
-			sfsymbols = {
-				check = "check",
-				x = "x",
-				plus = "plus",
-				minus = "minus",
-				info = "info",
-				alert = "alert-circle",
-				["chevron-left"] = "chevron-left",
-				["chevron-right"] = "chevron-right",
-				["chevron-up"] = "chevron-up",
-				["chevron-down"] = "chevron-down",
-				["arrow-left"] = "arrow-left",
-				["arrow-right"] = "arrow-right",
-				["arrow-up"] = "arrow-up",
-				["arrow-down"] = "arrow-down",
-				sliders = "sliders",
-				toggle = "toggle",
-				eye = "eye",
-				bell = "bell",
-				menu = "menu",
-				more = "more",
-				maximize = "maximize",
-				minimize = "grip",
-			},
+			sfsymbols = {},
 		}
 		local function resolveFamily(family, name)
 			local familyData = FAMILIES[string.lower(family or "")]
@@ -642,7 +589,7 @@ return function(import)
 
 	local REMOTE_BASE = "https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/"
 	local REMOTE = { lucide = true, solar = true, geist = true, craft = true, sfsymbols = true }
-	local VARIANTS = { "linear", "outline", "bold", "broken", "line-duotone", "bold-duotone" }
+	local VARIANTS = { "linear", "outline", "stroke", "bold", "broken", "line-duotone", "bold-duotone" }
 	local CACHE_FOLDER = "ZetaPro/icons"
 	local MAX_CATALOG = 16777216
 	local compile = loadstring
@@ -792,9 +739,6 @@ return function(import)
 
 	function Providers.ResolveFamily(family, name)
 		local base = resolveLocal(family, name)
-		if not base and type(name) == "string" then
-			base = Providers.Builtin.Resolve(string.lower(name))
-		end
 		local key = string.lower(family or "")
 		if not REMOTE[key] or type(name) ~= "string" then
 			return base
