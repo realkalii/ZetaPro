@@ -4,7 +4,7 @@
 
 **A dark, modular UI library for Roblox executors.**
 
-![Version](https://img.shields.io/badge/version-1.0.0-white?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.0.1-white?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square)
 ![Luau](https://img.shields.io/badge/Luau-typed-blue?style=flat-square)
 
