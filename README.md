@@ -2,7 +2,7 @@
 
 ![ZETA Pro/img by gab](assets/screenshots/preview.png)
 
-**A dark, modular UI library for Roblox executors.**
+# **A dark, modular UI library for Roblox Scripts.**
 
 ![Version](https://img.shields.io/badge/version-1.0.1-white?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square)
@@ -52,11 +52,10 @@ Icon = "geist:code"
 
 `Icon = "home"` keeps using the built-in local set. For `family:name`, the real icons of that family are downloaded once and cached in `ZetaPro/icons/`. If a family cannot be loaded, ZetaPro falls back to its built-in local icons, so the UI never breaks. Solar names carry a variant (`-linear`, `-outline`, `-bold`, `-broken`, `-line-duotone`, `-bold-duotone`); `solar:bomb` picks the first one available, in that order.
 
-The icon sets themselves belong to their authors and keep their own licenses: [Lucide](https://github.com/lucide-icons/lucide), [Craft](https://www.figma.com/community/file/1415718327120418204), [Geist](https://vercel.com/geist/icons), [Solar](https://icones.js.org/collection/solar) and [SF Symbols](https://sf-symbols-one.vercel.app/).
+The icon sets themselves belong to their authors and keep their own licenses: [Lucide](https://github.com/lucide-icons/lucide), [Craft](https://www.figma.com/community/file/1415718327120418204), [Geist](https://vercel.com/geist/icons), [Solar](https://icones.js.org/collection/solar) and [SF Symbols](https://sf-symbols-one.vercel.app/)
 
 ## Credits
 
 - [dawid-scripts/Fluent](https://github.com/dawid-scripts/Fluent) — UX, component set and API shape inspiration
 - [Footagesus/Icons](https://github.com/Footagesus/Icons) — icon families (Lucide, Solar, Geist, Craft, SF Symbols)
-- [Lucide](https://lucide.dev) / [Feather](https://feathericons.com) — icon style inspiration
-
+- [Icons.rest](https://icons.rest) - icons used in ZetaPro (nice site btw)
