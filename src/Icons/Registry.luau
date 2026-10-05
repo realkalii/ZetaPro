@@ -41,7 +41,7 @@ return function(import)
 				end
 				return Providers.Builtin.Resolve(spec)
 		end
-		if type(spec) == "table" and (spec.Type == "Vector" or spec.Type == "Image" or spec.Type == "Url") then
+		if type(spec) == "table" and (spec.Type == "Image" or spec.Type == "Url") then
 			return spec
 		end
 		return nil
