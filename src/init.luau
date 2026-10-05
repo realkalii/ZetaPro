@@ -4,12 +4,7 @@
 	Executor:
 		local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
-	Every module is `return function(import) ... end`. In Studio, `import`
-	resolves ModuleScripts under this script; in executors it downloads each
-	module from the repository (all in parallel, cached for the session) and
-	compiles it with loadstring. Override the source with
-	getgenv().ZETA_BASE = "https://.../src/".
-]]
+	]]
 
 local VERSION = "1.0.0"
 local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/"
