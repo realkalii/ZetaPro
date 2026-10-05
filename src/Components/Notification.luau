@@ -7,14 +7,13 @@ return function(import)
 	local Animation = import("Services/Animation")
 	local Cleanup = import("Services/Cleanup")
 
-	-- Builds a single toast inside the notification holder.
 	local Toast = {}
 	Toast.__index = Toast
 
 	local TYPES = {
 		Info = { Icon = "info", Token = "Info" },
 		Success = { Icon = "check-circle", Token = "Success" },
-		Warning = { Icon = "alert", Token = "Warning" },
+		Warning = { Icon = "alert-triangle", Token = "Warning" },
 		Error = { Icon = "alert-circle", Token = "Error" },
 	}
 
