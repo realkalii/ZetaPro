@@ -1,12 +1,8 @@
 --[[
-	ZETA Pro V1.0 — Modern Luau UI Library
-	Entry point and public API.
+	ZETA Pro V1.0 
 
 	Executor:
 		local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
-
-	Roblox Studio / Rojo:
-		local Zeta = require(path.to.ZetaPro)
 
 	Every module is `return function(import) ... end`. In Studio, `import`
 	resolves ModuleScripts under this script; in executors it downloads each
