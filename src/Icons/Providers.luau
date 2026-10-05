@@ -634,7 +634,7 @@ return function(import)
 		return spec, value.Parts
 	end
 
-	local function build(catalog, name)
+	local function build(catalog, name, exact)
 		local keys = { name }
 		local lower = string.lower(name)
 		if lower ~= name then
@@ -647,7 +647,7 @@ return function(import)
 				break
 			end
 		end
-		if not spec then
+		if not spec and not exact then
 			for _, variant in ipairs(VARIANTS) do
 				for _, key in ipairs(keys) do
 					spec, parts = entry(catalog, key .. "-" .. variant)
@@ -700,32 +700,36 @@ return function(import)
 			states[family] = "failed"
 			return
 		end
+		local fs = Capabilities.FS
+		local path = CACHE_FOLDER .. "/" .. family .. ".lua"
+		if Capabilities.FileSystem then
+			local ok, cached = pcall(function()
+				return fs.IsFile(path) and install(family, fs.Read(path))
+			end)
+			if ok and cached then
+				states[family] = "ready"
+				return
+			end
+		end
+		if not Capabilities.Http then
+			states[family] = "failed"
+			return
+		end
 		states[family] = "loading"
 		task.spawn(function()
-			local fs = Capabilities.FS
-			local path = CACHE_FOLDER .. "/" .. family .. ".lua"
 			local loaded = false
-			if Capabilities.FileSystem then
-				pcall(function()
-					if fs.IsFile(path) then
-						loaded = install(family, fs.Read(path))
-					end
-				end)
-			end
-			if not loaded and Capabilities.Http then
-				local success, body = Capabilities.HttpGet(REMOTE_BASE .. family .. "/dist/Icons.lua")
-				if success and type(body) == "string" and #body > 0 and #body <= MAX_CATALOG then
-					loaded = install(family, body)
-					if loaded and Capabilities.FileSystem then
-						pcall(function()
-							for _, folder in ipairs({ "ZetaPro", CACHE_FOLDER }) do
-								if not fs.IsFolder(folder) then
-									fs.MakeFolder(folder)
-								end
+			local success, body = Capabilities.HttpGet(REMOTE_BASE .. family .. "/dist/Icons.lua")
+			if success and type(body) == "string" and #body > 0 and #body <= MAX_CATALOG then
+				loaded = install(family, body)
+				if loaded and Capabilities.FileSystem then
+					pcall(function()
+						for _, folder in ipairs({ "ZetaPro", CACHE_FOLDER }) do
+							if not fs.IsFolder(folder) then
+								fs.MakeFolder(folder)
 							end
-							fs.Write(path, body)
-						end)
-					end
+						end
+						fs.Write(path, body)
+					end)
 				end
 			end
 			states[family] = loaded and "ready" or "failed"
@@ -757,13 +761,44 @@ return function(import)
 		return base
 	end
 
+	local PLAIN = { ["cards"] = "spade", ["combat"] = "swords", ["esp"] = "scan-eye", ["farm"] = "sprout", ["fly"] = "plane", ["inventory"] = "backpack", ["items"] = "package", ["movement"] = "footprints", ["npc"] = "bot", ["pets"] = "paw-print", ["quest"] = "scroll", ["weapons"] = "swords", ["alert"] = "triangle-alert", ["alert-circle"] = "circle-alert", ["ally"] = "users", ["ammo"] = "package", ["api"] = "webhook", ["armor"] = "shield", ["bar-chart"] = "chart-bar", ["blur"] = "droplets", ["boolean"] = "toggle-left", ["bow"] = "crosshair", ["brightness"] = "sun-medium", ["bullet"] = "dot", ["callback"] = "undo-2", ["check-circle"] = "circle-check", ["compile"] = "hammer", ["console"] = "square-terminal", ["constant"] = "lock", ["critical"] = "zap", ["crossed-swords"] = "swords", ["damage"] = "swords", ["death"] = "skull", ["debug"] = "bug", ["debugger"] = "bug-play", ["dock"] = "panel-bottom", ["dollar"] = "dollar-sign", ["dropper"] = "pipette", ["enemy"] = "skull", ["event"] = "zap", ["filter"] = "funnel", ["fist"] = "hand-fist", ["fullscreen"] = "maximize", ["function"] = "square-function", ["gradient"] = "blend", ["grenade"] = "bomb", ["grid"] = "layout-grid", ["health"] = "heart-pulse", ["helm"] = "hard-hat", ["help"] = "circle-help", ["home"] = "house", ["jump"] = "chevrons-up", ["layout"] = "layout-dashboard", ["logs"] = "scroll-text", ["loop"] = "repeat", ["medkit"] = "briefcase-medical", ["memory"] = "memory-stick", ["message"] = "message-square", ["module"] = "package", ["more"] = "ellipsis", ["new_tab"] = "square-plus", ["nil"] = "ban", ["number"] = "hash", ["opacity"] = "droplet", ["panel"] = "panel-left", ["performance"] = "gauge", ["plugin"] = "plug", ["plus-circle"] = "circle-plus", ["refresh"] = "refresh-cw", ["resize"] = "scaling", ["respawn"] = "rotate-ccw", ["restart"] = "rotate-ccw", ["return"] = "corner-down-left", ["run"] = "footprints", ["script"] = "file-code", ["sidebar"] = "panel-left", ["sliders"] = "sliders-horizontal", ["spawn"] = "map-pin-plus", ["speed"] = "gauge", ["stack"] = "layers", ["stop"] = "square", ["string"] = "type", ["tab"] = "app-window", ["tabs"] = "app-window", ["toggle"] = "toggle-left", ["undock"] = "panel-top", ["unlock"] = "lock-open", ["x-circle"] = "circle-x" }
+
+	local resolveBuiltin = Providers.Builtin.Resolve
+
+	function Providers.Builtin.Resolve(name)
+		local base = resolveBuiltin(name)
+		if type(name) ~= "string" or string.find(name, ":", 1, true) then
+			return base
+		end
+		local ok, real = pcall(function()
+			request("lucide")
+			if states.lucide ~= "ready" then
+				return nil
+			end
+			local key = string.lower(name)
+			local target = ALIASES[key] or key
+			return build(catalogs.lucide, PLAIN[key] or PLAIN[target] or target, true)
+		end)
+		if ok and real then
+			real.Name = name
+			return real
+		end
+		return base
+	end
+
 	function Providers.PendingFamily(name)
 		if type(name) ~= "string" then
 			return nil
 		end
 		local family = string.match(name, "^([%w_-]+):")
-		family = family and string.lower(family)
-		if family and REMOTE[family] and states[family] == "loading" then
+		if not family then
+			if states.lucide == "loading" then
+				return "lucide"
+			end
+			return nil
+		end
+		family = string.lower(family)
+		if REMOTE[family] and states[family] == "loading" then
 			return family
 		end
 		return nil
