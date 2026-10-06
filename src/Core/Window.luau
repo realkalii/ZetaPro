@@ -27,6 +27,7 @@ return function(import)
 		self._search = Search.new()
 		self.Cleanup = Cleanup.new()
 		self.OnDestroy = Signal.new()
+		self.MinimizedChanged = Signal.new()
 		self.TabWidth = config.TabWidth or 160
 		self.MinSize = config.MinSize or Vector2.new(420, 320)
 		self.MaxSize = config.MaxSize or Vector2.new(1000, 800)
@@ -64,7 +65,6 @@ return function(import)
 		uiScale.Parent = root
 		Theme.BindScale(uiScale, cleanup)
 
-		-- Topbar -------------------------------------------------------------
 		local topbar = Utility.Create("Frame", {
 			Name = "Topbar",
 			BackgroundTransparency = 1,
@@ -159,7 +159,6 @@ return function(import)
 			end)
 		end
 
-		-- Search -------------------------------------------------------------
 		local searchBox = Widgets.Surface(cleanup, {
 			Name = "Search",
 			Parent = topbar,
@@ -183,7 +182,6 @@ return function(import)
 		})
 		self._searchInput = searchInput
 
-		-- Sidebar, content, layers ------------------------------------------
 		local sidebar = Utility.Create("Frame", {
 			Name = "Sidebar",
 			BackgroundTransparency = 1,
@@ -238,7 +236,6 @@ return function(import)
 		local searchLayer = layer("SearchLayer", 30)
 		self._dialogLayer = layer("Dialogs", 40)
 
-		-- Search results panel ----------------------------------------------
 		local results = Widgets.Surface(cleanup, {
 			Class = "ScrollingFrame",
 			Name = "Results",
@@ -341,7 +338,6 @@ return function(import)
 			end)
 		end))
 
-		-- Drag, resize, restore button -----------------------------------------
 		Drag.Attach(topbar, root, cleanup)
 		if config.Resize == true then
 			local grip = Utility.Create("TextButton", {
@@ -368,34 +364,83 @@ return function(import)
 
 		local showRestore = config.RestoreButton
 		if showRestore == nil then
-			showRestore = Capabilities.Touch
+			showRestore = true
 		end
 		if showRestore then
-			local button = Widgets.Surface(cleanup, {
-				Class = "TextButton",
-				Name = "RestoreButton",
+			local control = Widgets.Surface(cleanup, {
+				Class = "CanvasGroup",
+				Name = "MinimizeControl",
 				Parent = gui,
 				Fill = "SecondaryBackground",
 				Stroke = "Border",
-				Radius = 8,
+				Radius = "Full",
 				Position = UDim2.fromOffset(16, 16),
-				Size = UDim2.fromOffset(40, 40),
+				Size = UDim2.fromOffset(84, 36),
+				GroupTransparency = 1,
 				Visible = false,
 			})
-			Icons.Create(button, "terminal", { Size = 18, Position = UDim2.fromOffset(11, 11), Color = "Text", Cleanup = cleanup })
-			Drag.Attach(button, button, cleanup)
-			cleanup:Add(button.Activated:Connect(function()
+			local controlScale = Instance.new("UIScale")
+			controlScale.Scale = 0.92
+			controlScale.Parent = control
+			Widgets.Text(cleanup, {
+				Name = "Brand",
+				Parent = control,
+				Text = "ZΞ",
+				Bold = true,
+				TextSize = 15,
+				TextXAlignment = Enum.TextXAlignment.Center,
+				Size = UDim2.new(0, 46, 1, 0),
+			})
+			Widgets.Surface(cleanup, {
+				Name = "Separator",
+				Parent = control,
+				Fill = "Border",
+				Radius = 0,
+				BackgroundTransparency = 0.25,
+				AnchorPoint = Vector2.new(0, 0.5),
+				Position = UDim2.new(0, 46, 0.5, 0),
+				Size = UDim2.fromOffset(1, 16),
+			})
+			local chevron = Icons.Create(control, "chevron-down", {
+				Size = 16,
+				Position = UDim2.new(0, 55, 0.5, -8),
+				Color = "MutedText",
+				Cleanup = cleanup,
+			})
+			local hit = Utility.Create("TextButton", {
+				Name = "Hit",
+				BackgroundTransparency = 1,
+				Text = "",
+				Size = UDim2.fromScale(1, 1),
+				ZIndex = 5,
+				Parent = control,
+			})
+			Widgets.Interactive(cleanup, control, hit, {})
+			Drag.Attach(hit, control, cleanup)
+			local pressedAt
+			cleanup:Add(hit.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					pressedAt = control.Position
+				end
+			end))
+			cleanup:Add(hit.Activated:Connect(function()
+				local origin = pressedAt
+				pressedAt = nil
+				if origin then
+					local moved = math.abs(control.Position.X.Offset - origin.X.Offset) + math.abs(control.Position.Y.Offset - origin.Y.Offset)
+					if moved > 8 then
+						return
+					end
+				end
 				self:Restore()
 			end))
-			self._restoreButton = button
+			self._control = { Frame = control, Scale = controlScale, Chevron = chevron.Instance }
 		end
 
-		-- Acrylic -----------------------------------------------------------
 		if self.Acrylic and config.Blur ~= false and Acrylic.Supported() then
 			self._blur = Acrylic.new(cleanup, 10)
 		end
 
-		-- Viewport clamping -------------------------------------------------
 		local cameraConnection
 		local function hookCamera()
 			if cameraConnection then
@@ -426,6 +471,7 @@ return function(import)
 			self:_UpdateLayout()
 		end))
 		cleanup:Add(self.OnDestroy)
+		cleanup:Add(self.MinimizedChanged)
 
 		self:SetMinimizeKey(config.MinimizeKey)
 		self:_Clamp()
@@ -515,8 +561,6 @@ return function(import)
 		end)
 	end
 
-	-- Public API --------------------------------------------------------------
-
 	function Window:AddTab(config)
 		Utility.Check(not self._destroyed, "Tab", config and config.Title, "Window is destroyed.")
 		local tab = Tab.new(self, config)
@@ -598,6 +642,32 @@ return function(import)
 		end
 	end
 
+	function Window:_Control(show)
+		local control = self._control
+		if not control then
+			return
+		end
+		local frame, scale, chevron = control.Frame, control.Scale, control.Chevron
+		if show then
+			frame.Visible = true
+			chevron.Rotation = 180
+			Animation:Play(frame, { GroupTransparency = 0 }, { Duration = Animation.Duration.Normal })
+			Animation:Play(scale, { Scale = 1 }, { Duration = Animation.Duration.Normal })
+			Animation:Play(chevron, { Rotation = 0 }, { Duration = Animation.Duration.Normal })
+		else
+			Animation:Play(chevron, { Rotation = 180 }, { Duration = Animation.Duration.Fast })
+			Animation:Play(scale, { Scale = 0.92 }, { Duration = Animation.Duration.Fast })
+			Animation:Play(frame, { GroupTransparency = 1 }, {
+				Duration = Animation.Duration.Fast,
+				OnComplete = function()
+					if not self._minimized and not self._destroyed then
+						frame.Visible = false
+					end
+				end,
+			})
+		end
+	end
+
 	function Window:Minimize()
 		if self._minimized or self._destroyed then
 			return
@@ -607,9 +677,7 @@ return function(import)
 		if self._blur then
 			self._blur.SetActive(false)
 		end
-		if self._restoreButton then
-			self._restoreButton.Visible = true
-		end
+		self:_Control(true)
 		Animation:Play(self.Root, { GroupTransparency = 1 }, {
 			Duration = 0.18,
 			OnComplete = function()
@@ -618,6 +686,7 @@ return function(import)
 				end
 			end,
 		})
+		self.MinimizedChanged:Fire(true)
 	end
 
 	function Window:Restore()
@@ -626,21 +695,24 @@ return function(import)
 		end
 		self._minimized = false
 		self.Root.Visible = true
-		if self._restoreButton then
-			self._restoreButton.Visible = false
-		end
+		self:_Control(false)
 		if self._blur and self.Acrylic then
 			self._blur.SetActive(true)
 		end
 		Animation:Play(self.Root, { GroupTransparency = 0 }, { Duration = 0.18 })
+		self.MinimizedChanged:Fire(false)
 	end
 
-	function Window:Toggle()
+	function Window:ToggleMinimize()
 		if self._minimized then
 			self:Restore()
 		else
 			self:Minimize()
 		end
+	end
+
+	function Window:Toggle()
+		self:ToggleMinimize()
 	end
 
 	function Window:IsMinimized()
@@ -652,8 +724,6 @@ return function(import)
 		return Dialog.new(self, config)
 	end
 
-	-- Popups (dropdown lists, colorpicker panels) live inside the window layer.
-	-- Returns { Frame, Cleanup, Closed, Close }.
 	function Window:OpenPopup(anchor, width, height)
 		self:ClosePopup()
 		local layer = self._popupLayer
@@ -679,8 +749,6 @@ return function(import)
 			GroupTransparency = 1,
 			ZIndex = 2,
 		})
-		-- The popup frame must be destroyed on close: a CanvasGroup's own UIStroke
-		-- stays visible even at GroupTransparency = 1 (this was the stray squares).
 		cleanup:Add(frame)
 
 		local scale = Theme.Scale
