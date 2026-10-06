@@ -1,8 +1,3 @@
---!strict
--- Public type definitions for ZETA Pro.
--- In Roblox Studio / Rojo:  local Types = require(path.to.ZetaPro.Types)
--- (Executors strip types at runtime, so this module is for tooling only.)
-
 export type Signal<T...> = {
 	Connect: (self: Signal<T...>, callback: (T...) -> ()) -> Connection,
 	Once: (self: Signal<T...>, callback: (T...) -> ()) -> Connection,
