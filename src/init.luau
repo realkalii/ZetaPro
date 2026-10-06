@@ -6,7 +6,6 @@
 
 	]]
 
-
 local VERSION = "1.0.1"
 local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/"
 
