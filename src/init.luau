@@ -1,30 +1,14 @@
---[[
-	ZETA Pro V1.0 — Modern Luau UI Library
-	Entry point and public API.
 
-	Executor:
-		local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
-
-	Roblox Studio / Rojo:
-		local Zeta = require(path.to.ZetaPro)
-
-	Every module is `return function(import) ... end`. In Studio, `import`
-	resolves ModuleScripts under this script; in executors it downloads each
-	module from the repository (all in parallel, cached for the session) and
-	compiles it with loadstring. Override the source with
-	getgenv().ZETA_BASE = "https://.../src/".
-]]
-
-local VERSION = "1.0.0"
+local VERSION = "1.0.2"
 local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/"
 
 local MODULES = {
 	"Core/Signal", "Core/State", "Core/Capabilities", "Core/Utility", "Core/Config", "Core/Theme",
 	"Core/Widgets", "Core/Search", "Core/Component", "Core/Section", "Core/Tab", "Core/Window",
-	"Themes/Default", "Themes/Dark", "Themes/Light", "Themes/Midnight", "Themes/Zeta",
+	"Themes/Default", "Themes/Dark", "Themes/Light", "Themes/Midnight", "Themes/Zeta", "Themes/Crimson", "Themes/Halloween2026",
 	"Services/Cleanup", "Services/Animation", "Services/Input", "Services/Drag", "Services/Acrylic",
 	"Services/Tooltip", "Services/Notification",
-	"Icons/Icon", "Icons/Registry", "Icons/Providers",
+	"Icons/Icon", "Icons/Catalog", "Icons/Registry", "Icons/Providers",
 	"Components/Button", "Components/Toggle", "Components/Slider", "Components/Dropdown",
 	"Components/MultiDropdown", "Components/Input", "Components/Keybind", "Components/Colorpicker",
 	"Components/Paragraph", "Components/Label", "Components/Divider", "Components/Notification",
@@ -39,7 +23,6 @@ do
 	globalEnv = ok and env or _G
 end
 
--- Re-executing the script replaces the previous instance cleanly.
 if type(globalEnv.__ZetaPro) == "table" and type(globalEnv.__ZetaPro.Unload) == "function" then
 	pcall(function()
 		globalEnv.__ZetaPro:Unload()
@@ -135,9 +118,10 @@ local Input = import("Services/Input")
 local Tooltip = import("Services/Tooltip")
 local Notification = import("Services/Notification")
 
-for _, name in { "Dark", "Light", "Midnight", "Zeta" } do
+for _, name in { "Dark", "Light", "Midnight", "Zeta", "Crimson" } do
 	Theme.Register(name, import("Themes/" .. name))
 end
+Theme.Register("Halloween 2026", import("Themes/Halloween2026"))
 Theme.Set("Dark")
 
 for _, name in {
