@@ -1,0 +1,15 @@
+return {
+	Background = Color3.fromRGB(12, 8, 9),
+	SecondaryBackground = Color3.fromRGB(19, 12, 14),
+	TertiaryBackground = Color3.fromRGB(28, 17, 20),
+	Text = Color3.fromRGB(240, 232, 233),
+	MutedText = Color3.fromRGB(150, 128, 131),
+	Accent = Color3.fromRGB(200, 32, 58),
+	AccentText = Color3.fromRGB(255, 255, 255),
+	Border = Color3.fromRGB(46, 28, 32),
+	Hover = Color3.fromRGB(33, 20, 23),
+	Pressed = Color3.fromRGB(24, 15, 17),
+	Error = Color3.fromRGB(255, 120, 120),
+	Info = Color3.fromRGB(222, 140, 150),
+	AcrylicTransparency = 0.07,
+}
