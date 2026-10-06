@@ -1,6 +1,8 @@
 <div align="center">
 
-![ZETA Pro/img by gab](assets/screenshots/preview.png)
+![logo/https://discord.gg/9EPXws3Ybg](assets/screenshots/logo.png)
+    
+![preview/https://discord.gg/9EPXws3Ybg](assets/screenshots/preview.png)
 
 # **A dark, modular UI library for Roblox Scripts Hubs.**
 
