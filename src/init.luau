@@ -1,12 +1,12 @@
 --[[
-	ZETA Pro V1.0 
+	ZETA Pro V1.0.1
 
 	Executor:
 		local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
 	]]
 
-local VERSION = "1.0.0"
+local VERSION = "1.0.1"
 local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/"
 
 local MODULES = {
