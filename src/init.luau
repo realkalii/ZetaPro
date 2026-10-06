@@ -7,7 +7,7 @@
 	]]
 
 local VERSION = "1.0.2"
-local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/"
+local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/beta/src/"
 
 local MODULES = {
 	"Core/Signal", "Core/State", "Core/Capabilities", "Core/Utility", "Core/Config", "Core/Theme",
