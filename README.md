@@ -2,7 +2,7 @@
 
 ![ZETA Pro/img by gab](assets/screenshots/preview.png)
 
-# **A dark, modular UI library for Roblox Scripts.**
+# **A dark, modular UI library for Roblox Scripts Hubs.**
 
 ![Version](https://img.shields.io/badge/version-1.0.1-white?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square)
