@@ -47,7 +47,7 @@ return function(import)
 		local raw = without(props, SURFACE_KEYS)
 		local fill, strokeToken, radius = props.Fill, props.Stroke, props.Radius
 		if radius == nil then
-			radius = 10
+			radius = 12
 		end
 		if fill == nil and raw.BackgroundTransparency == nil then
 			raw.BackgroundTransparency = 1

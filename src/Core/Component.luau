@@ -57,13 +57,16 @@ return function(import)
 			Parent = ctx.Parent,
 			Fill = (not flat) and "SecondaryBackground" or nil,
 			Stroke = (not flat) and "Border" or nil,
-			Radius = 10,
-			Size = UDim2.new(1, 0, 0, opts.MinHeight or 44),
+			Radius = 16,
+			Size = UDim2.new(1, 0, 0, opts.MinHeight or 48),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			LayoutOrder = ctx.Order(),
 		})
 		cleanup:Add(frame)
 		self.Frame, self.Stroke = frame, stroke
+		if stroke then
+			stroke.Transparency = 0.9
+		end
 
 		local rightWidth = opts.RightWidth or 0
 		local left = Utility.Create("Frame", {
@@ -73,8 +76,8 @@ return function(import)
 			Size = UDim2.new(1, rightWidth > 0 and -(rightWidth + 12) or 0, 0, 0),
 			Parent = frame,
 		})
-		Utility.Create("UIPadding", { PaddingRight = UDim.new(0, 12), PaddingLeft = UDim.new(0, 14), PaddingTop = UDim.new(0, 13), PaddingBottom = UDim.new(0, 13), Parent = left })
-		Widgets.List(left, 10, { FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center })
+		Utility.Create("UIPadding", { PaddingRight = UDim.new(0, 14), PaddingLeft = UDim.new(0, 16), PaddingTop = UDim.new(0, 15), PaddingBottom = UDim.new(0, 15), Parent = left })
+		Widgets.List(left, 12, { FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center })
 
 		self._iconHolder = Utility.Create("Frame", {
 			Name = "IconHolder",
@@ -92,7 +95,7 @@ return function(import)
 			LayoutOrder = 2,
 			Parent = left,
 		})
-		Widgets.List(self._textCol, 3)
+		Widgets.List(self._textCol, 4)
 
 		local title = config.Title or config.Text or ""
 		local description = config.Description or config.Content or ""
@@ -283,7 +286,7 @@ return function(import)
 				Parent = self.Frame,
 				Fill = "Background",
 				BackgroundTransparency = 0.45,
-				Radius = 10,
+				Radius = 16,
 				Active = true,
 				ZIndex = 10,
 				Size = UDim2.fromScale(1, 1),

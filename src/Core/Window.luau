@@ -51,7 +51,7 @@ return function(import)
 			Parent = gui,
 			Fill = "Background",
 			Stroke = "Border",
-			Radius = 14,
+			Radius = 20,
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.fromOffset(size.X.Offset, size.Y.Offset),
@@ -165,7 +165,7 @@ return function(import)
 			Parent = topbar,
 			Fill = "TertiaryBackground",
 			Stroke = "Border",
-			Radius = 10,
+			Radius = 14,
 			BackgroundTransparency = 0.5,
 			AnchorPoint = Vector2.new(1, 0.5),
 			Position = UDim2.new(1, -(controlsWidth + 20), 0.5, 0),
@@ -244,7 +244,7 @@ return function(import)
 			Parent = searchLayer,
 			Fill = "SecondaryBackground",
 			Stroke = "Border",
-			Radius = 10,
+			Radius = 14,
 			AnchorPoint = Vector2.new(1, 0),
 			Position = UDim2.new(1, -10, 0, TOPBAR + 6),
 			Size = UDim2.fromOffset(300, 0),
@@ -287,7 +287,7 @@ return function(import)
 					Name = "Result",
 					Parent = results,
 					Fill = "SecondaryBackground",
-					Radius = 8,
+					Radius = 12,
 					Size = UDim2.new(1, 0, 0, 42),
 					LayoutOrder = index,
 				})
@@ -543,10 +543,10 @@ return function(import)
 			Animation:Play(page, { CanvasPosition = Vector2.new(0, math.max(0, offset)) }, { Duration = 0.25 })
 			local stroke = entry.Component and entry.Component.Stroke
 			if stroke then
-				Animation:Play(stroke, { Color = Theme.Get("Accent") }, { Duration = 0.15 })
+				Animation:Play(stroke, { Color = Theme.Get("Accent"), Transparency = 0 }, { Duration = 0.15 })
 				task.delay(0.9, function()
 					if stroke.Parent and not self._destroyed then
-						Animation:Play(stroke, { Color = Theme.Get("Border") }, { Duration = 0.3 })
+						Animation:Play(stroke, { Color = Theme.Get("Border"), Transparency = 0.9 }, { Duration = 0.3 })
 					end
 				end)
 			end
@@ -736,7 +736,7 @@ return function(import)
 			Parent = layer,
 			Fill = "SecondaryBackground",
 			Stroke = "Border",
-			Radius = 10,
+			Radius = 14,
 			Size = UDim2.fromOffset(width, height),
 			GroupTransparency = 1,
 			ZIndex = 2,
