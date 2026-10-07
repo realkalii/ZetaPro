@@ -17,7 +17,7 @@ return function(import)
 	local Window = {}
 	Window.__index = Window
 
-	local TOPBAR = 44
+	local TOPBAR = 40
 
 	function Window.new(config)
 		Utility.Check(type(config) == "table", "Window", "?", "Config must be a table.")
@@ -28,8 +28,8 @@ return function(import)
 		self.Cleanup = Cleanup.new()
 		self.OnDestroy = Signal.new()
 		self.MinimizedChanged = Signal.new()
-		self.TabWidth = config.TabWidth or 160
-		self.MinSize = config.MinSize or Vector2.new(420, 320)
+		self.TabWidth = config.TabWidth or 148
+		self.MinSize = config.MinSize or Vector2.new(380, 280)
 		self.MaxSize = config.MaxSize or Vector2.new(1000, 800)
 		self.Acrylic = config.Acrylic ~= false
 		self._searchEnabled = config.SearchEnabled ~= false
@@ -93,7 +93,7 @@ return function(import)
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		})
 		if config.Icon then
-			local icon = Icons.Create(titles, config.Icon, { Size = 18, Color = "Text", Cleanup = cleanup })
+			local icon = Icons.Create(titles, config.Icon, { Size = 16, Color = "Text", Cleanup = cleanup })
 			icon.Instance.LayoutOrder = 0
 		end
 		self._titleLabel = Widgets.Text(cleanup, {
@@ -101,7 +101,7 @@ return function(import)
 			Parent = titles,
 			Text = config.Title or "ZETA Pro",
 			Bold = true,
-			TextSize = 14,
+			TextSize = 13,
 			AutomaticSize = Enum.AutomaticSize.X,
 			Size = UDim2.new(0, 0, 1, 0),
 			LayoutOrder = 1,
@@ -111,7 +111,7 @@ return function(import)
 			Parent = titles,
 			Text = config.SubTitle or "",
 			Color = "MutedText",
-			TextSize = 12,
+			TextSize = 11,
 			AutomaticSize = Enum.AutomaticSize.X,
 			Size = UDim2.new(0, 0, 1, 0),
 			LayoutOrder = 2,
@@ -123,7 +123,7 @@ return function(import)
 			BackgroundTransparency = 1,
 			AnchorPoint = Vector2.new(1, 0.5),
 			Position = UDim2.new(1, -10, 0.5, 0),
-			Size = UDim2.new(0, 0, 0, 28),
+			Size = UDim2.new(0, 0, 0, 26),
 			AutomaticSize = Enum.AutomaticSize.X,
 			Parent = topbar,
 		})
@@ -138,11 +138,12 @@ return function(import)
 				Name = "Control_" .. iconName,
 				Parent = controls,
 				Fill = "SecondaryBackground",
+				BackgroundTransparency = 0.35,
 				Radius = 6,
-				Size = UDim2.fromOffset(28, 28),
+				Size = UDim2.fromOffset(26, 26),
 				LayoutOrder = order,
 			})
-			Icons.Create(button, iconName, { Size = 14, Position = UDim2.fromOffset(7, 7), Cleanup = cleanup })
+			Icons.Create(button, iconName, { Size = 13, Position = UDim2.fromOffset(6.5, 6.5), Cleanup = cleanup })
 			Widgets.Interactive(cleanup, button, button, {})
 			cleanup:Add(button.Activated:Connect(callback))
 			return button
@@ -150,9 +151,9 @@ return function(import)
 		control("minus", 1, function()
 			self:Minimize()
 		end)
-		local controlsWidth = 28
+		local controlsWidth = 26
 		if config.CloseButton == true then
-			controlsWidth = 60
+			controlsWidth = 56
 			control("x", 2, function()
 				Utility.SafeCall("Window OnClose", config.OnClose)
 				self:Destroy()
@@ -165,12 +166,13 @@ return function(import)
 			Fill = "TertiaryBackground",
 			Stroke = "Border",
 			Radius = 6,
+			BackgroundTransparency = 0.35,
 			AnchorPoint = Vector2.new(1, 0.5),
 			Position = UDim2.new(1, -(controlsWidth + 18), 0.5, 0),
-			Size = UDim2.fromOffset(170, 28),
+			Size = UDim2.fromOffset(150, 26),
 		})
 		self._searchBox = searchBox
-		Icons.Create(searchBox, "search", { Size = 14, Position = UDim2.fromOffset(8, 7), Cleanup = cleanup })
+		Icons.Create(searchBox, "search", { Size = 13, Position = UDim2.fromOffset(8, 6.5), Cleanup = cleanup })
 		local searchInput = Widgets.Text(cleanup, {
 			Class = "TextBox",
 			Name = "SearchInput",
@@ -209,7 +211,7 @@ return function(import)
 			ScrollingDirection = Enum.ScrollingDirection.Y,
 			Parent = sidebar,
 		})
-		Widgets.Padding(tabList, 8)
+		Widgets.Padding(tabList, 6)
 		Widgets.List(tabList, 4)
 		self._tabList = tabList
 
@@ -374,11 +376,12 @@ return function(import)
 				Name = "MinimizeControl",
 				Parent = pillGui,
 				Fill = "SecondaryBackground",
+				BackgroundTransparency = 0.2,
 				Stroke = "Border",
 				Radius = "Full",
 				AnchorPoint = Vector2.new(0.5, 0),
 				Position = UDim2.new(0.5, 0, 0, 10),
-				Size = UDim2.fromOffset(84, 36),
+				Size = UDim2.fromOffset(76, 32),
 				GroupTransparency = 1,
 				Visible = false,
 			})
@@ -390,9 +393,9 @@ return function(import)
 				Parent = control,
 				Text = "ZΞ",
 				Bold = true,
-				TextSize = 15,
+				TextSize = 14,
 				TextXAlignment = Enum.TextXAlignment.Center,
-				Size = UDim2.new(0, 46, 1, 0),
+				Size = UDim2.new(0, 42, 1, 0),
 			})
 			Widgets.Surface(cleanup, {
 				Name = "Separator",
@@ -401,12 +404,12 @@ return function(import)
 				Radius = 0,
 				BackgroundTransparency = 0.25,
 				AnchorPoint = Vector2.new(0, 0.5),
-				Position = UDim2.new(0, 46, 0.5, 0),
-				Size = UDim2.fromOffset(1, 16),
+				Position = UDim2.new(0, 42, 0.5, 0),
+				Size = UDim2.fromOffset(1, 14),
 			})
 			local chevron = Icons.Create(control, "chevron-down", {
-				Size = 16,
-				Position = UDim2.new(0, 55, 0.5, -8),
+				Size = 14,
+				Position = UDim2.new(0, 50, 0.5, -7),
 				Color = "MutedText",
 				Cleanup = cleanup,
 			})
