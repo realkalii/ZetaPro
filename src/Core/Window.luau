@@ -17,34 +17,7 @@ return function(import)
 	local Window = {}
 	Window.__index = Window
 
-	local RunService = game:GetService("RunService")
-
 	local TOPBAR = 44
-
-	local LED_THEMES = {
-		Dark = "Dark",
-		Midnight = "Dark",
-		Zeta = "Dark",
-		Crimson = "Dark",
-		["Halloween 2026"] = "Dark",
-		Light = "Light",
-	}
-
-	local LED_DARK = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.new(0, 0, 0)),
-		ColorSequenceKeypoint.new(0.46, Color3.new(0, 0, 0)),
-		ColorSequenceKeypoint.new(0.5, Color3.new(1, 1, 1)),
-		ColorSequenceKeypoint.new(0.54, Color3.new(0, 0, 0)),
-		ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0)),
-	})
-
-	local LED_LIGHT = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
-		ColorSequenceKeypoint.new(0.46, Color3.new(1, 1, 1)),
-		ColorSequenceKeypoint.new(0.5, Color3.new(0, 0, 0)),
-		ColorSequenceKeypoint.new(0.54, Color3.new(1, 1, 1)),
-		ColorSequenceKeypoint.new(1, Color3.new(1, 1, 1)),
-	})
 
 	function Window.new(config)
 		Utility.Check(type(config) == "table", "Window", "?", "Config must be a table.")
@@ -402,7 +375,7 @@ return function(import)
 				Stroke = "Border",
 				Radius = "Full",
 				AnchorPoint = Vector2.new(0.5, 0),
-				Position = UDim2.new(0.5, 0, 0, 16),
+				Position = UDim2.new(0.5, 0, 0, 6),
 				Size = UDim2.fromOffset(84, 36),
 				GroupTransparency = 1,
 				Visible = false,
@@ -447,38 +420,6 @@ return function(import)
 			cleanup:Add(hit.Activated:Connect(function()
 				self:Restore()
 			end))
-
-			local ledStroke = Utility.Create("UIStroke", {
-				Name = "Led",
-				Thickness = 2,
-				Color = Color3.new(1, 1, 1),
-				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-				Parent = control,
-			})
-			local ledGradient = Utility.Create("UIGradient", {
-				Parent = ledStroke,
-			})
-			local ledConnection
-			local function stopLed()
-				if ledConnection then
-					ledConnection:Disconnect()
-					ledConnection = nil
-				end
-			end
-			cleanup:Add(stopLed)
-			Theme.BindFn(function()
-				local variant = LED_THEMES[Theme.GetName()]
-				stopLed()
-				ledStroke.Enabled = variant ~= nil
-				if not variant then
-					return
-				end
-				ledGradient.Color = variant == "Light" and LED_LIGHT or LED_DARK
-				ledGradient.Rotation = 0
-				ledConnection = RunService.Heartbeat:Connect(function(delta)
-					ledGradient.Rotation = (ledGradient.Rotation + delta * 90) % 360
-				end)
-			end, cleanup)
 
 			self._control = { Frame = control, Scale = controlScale, Chevron = chevron.Instance }
 		end
