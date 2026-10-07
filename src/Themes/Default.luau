@@ -1,4 +1,3 @@
--- Fallback token set: every registered theme is merged over this table.
 return {
 	Background = Color3.fromRGB(14, 14, 15),
 	SecondaryBackground = Color3.fromRGB(30, 30, 33),
@@ -17,4 +16,6 @@ return {
 	Overlay = Color3.fromRGB(0, 0, 0),
 	AcrylicTransparency = 0.08,
 	ElementTransparency = 0.4,
+	ComponentTransparency = 0.78,
+	ComponentStrokeTransparency = 0.82,
 }
