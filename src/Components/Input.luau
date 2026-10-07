@@ -40,7 +40,7 @@ return function(import)
 			Parent = self.Right,
 			Fill = "TertiaryBackground",
 			Stroke = "Border",
-			Radius = 5,
+			Radius = 8,
 			Size = UDim2.fromScale(1, 1),
 		})
 		local box = Widgets.Text(cleanup, {

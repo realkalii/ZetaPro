@@ -41,7 +41,7 @@ return function(import)
 			Parent = wrapper,
 			Fill = "SecondaryBackground",
 			Stroke = "Border",
-			Radius = 8,
+			Radius = 14,
 			Size = UDim2.new(1, 0, 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			Position = UDim2.fromOffset(40, 0),
@@ -58,7 +58,7 @@ return function(import)
 			LayoutOrder = 1,
 			Parent = card,
 		})
-		Widgets.Padding(body, 12)
+		Widgets.Padding(body, 14)
 
 		local icon = Icons.Create(body, config.Icon or kind.Icon, { Size = 16, Color = kind.Token, Cleanup = cleanup })
 		icon.Instance.Position = UDim2.fromOffset(0, 1)
