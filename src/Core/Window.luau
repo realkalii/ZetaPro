@@ -678,6 +678,8 @@ return function(import)
 			return
 		end
 		self._minimized = false
+		self.Root.Position = UDim2.fromScale(0.5, 0.5)
+		self:_Clamp()
 		self.Root.Visible = true
 		self:_Control(false)
 		if self._blur and self.Acrylic then
