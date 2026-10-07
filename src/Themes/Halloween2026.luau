@@ -12,5 +12,5 @@ return {
 	Warning = Color3.fromRGB(240, 150, 40),
 	Error = Color3.fromRGB(214, 60, 78),
 	Info = Color3.fromRGB(176, 132, 232),
-	AcrylicTransparency = 0.07,
+	AcrylicTransparency = 0.45,
 }

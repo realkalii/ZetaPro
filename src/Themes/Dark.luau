@@ -9,5 +9,5 @@ return {
 	Border = Color3.fromRGB(40, 40, 44),
 	Hover = Color3.fromRGB(32, 32, 36),
 	Pressed = Color3.fromRGB(26, 26, 29),
-	AcrylicTransparency = 0.08,
+	AcrylicTransparency = 0.45,
 }

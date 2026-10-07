@@ -11,5 +11,5 @@ return {
 	Pressed = Color3.fromRGB(24, 15, 17),
 	Error = Color3.fromRGB(255, 120, 120),
 	Info = Color3.fromRGB(222, 140, 150),
-	AcrylicTransparency = 0.07,
+	AcrylicTransparency = 0.45,
 }
