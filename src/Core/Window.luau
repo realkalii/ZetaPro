@@ -138,7 +138,7 @@ return function(import)
 				Name = "Control_" .. iconName,
 				Parent = controls,
 				Fill = "SecondaryBackground",
-				BackgroundTransparency = 0.55,
+				Transparency = "ElementTransparency",
 				Radius = "Full",
 				Size = UDim2.fromOffset(28, 28),
 				LayoutOrder = order,
@@ -166,7 +166,7 @@ return function(import)
 			Fill = "TertiaryBackground",
 			Stroke = "Border",
 			Radius = 14,
-			BackgroundTransparency = 0.5,
+			Transparency = "ElementTransparency",
 			AnchorPoint = Vector2.new(1, 0.5),
 			Position = UDim2.new(1, -(controlsWidth + 20), 0.5, 0),
 			Size = UDim2.fromOffset(150, 28),
@@ -376,13 +376,13 @@ return function(import)
 				Name = "MinimizeControl",
 				Parent = pillGui,
 				Fill = "SecondaryBackground",
-				BackgroundTransparency = 0.35,
+				Transparency = "ElementTransparency",
 				Stroke = "Border",
 				Radius = "Full",
 				AnchorPoint = Vector2.new(0.5, 0),
 				Position = UDim2.new(0.5, 0, 0, 10),
 				Size = UDim2.fromOffset(76, 32),
-				GroupTransparency = 1,
+				GroupTransparency = 0,
 				Visible = false,
 			})
 			local controlScale = Instance.new("UIScale")
@@ -643,13 +643,12 @@ return function(import)
 		if show then
 			frame.Visible = true
 			chevron.Rotation = 180
-			Animation:Play(frame, { GroupTransparency = 0 }, { Duration = Animation.Duration.Normal })
+			scale.Scale = 0.92
 			Animation:Play(scale, { Scale = 1 }, { Duration = Animation.Duration.Normal })
 			Animation:Play(chevron, { Rotation = 0 }, { Duration = Animation.Duration.Normal })
 		else
 			Animation:Play(chevron, { Rotation = 180 }, { Duration = Animation.Duration.Fast })
-			Animation:Play(scale, { Scale = 0.92 }, { Duration = Animation.Duration.Fast })
-			Animation:Play(frame, { GroupTransparency = 1 }, {
+			Animation:Play(scale, { Scale = 0.92 }, {
 				Duration = Animation.Duration.Fast,
 				OnComplete = function()
 					if not self._minimized and not self._destroyed then
@@ -670,14 +669,7 @@ return function(import)
 			self._blur.SetActive(false)
 		end
 		self:_Control(true)
-		Animation:Play(self.Root, { GroupTransparency = 1 }, {
-			Duration = 0.18,
-			OnComplete = function()
-				if self._minimized and not self._destroyed then
-					self.Root.Visible = false
-				end
-			end,
-		})
+		self.Root.Visible = false
 		self.MinimizedChanged:Fire(true)
 	end
 
@@ -691,7 +683,6 @@ return function(import)
 		if self._blur and self.Acrylic then
 			self._blur.SetActive(true)
 		end
-		Animation:Play(self.Root, { GroupTransparency = 0 }, { Duration = 0.18 })
 		self.MinimizedChanged:Fire(false)
 	end
 
