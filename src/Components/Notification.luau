@@ -40,6 +40,7 @@ return function(import)
 			Class = "CanvasGroup",
 			Parent = wrapper,
 			Fill = "SecondaryBackground",
+			BackgroundTransparency = 0.45,
 			Stroke = "Border",
 			Radius = 20,
 			Size = UDim2.new(1, 0, 0, 0),
