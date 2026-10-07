@@ -88,7 +88,7 @@ return function(import)
 			Name = "Swatch",
 			Parent = self.Right,
 			Stroke = "Border",
-			Radius = 8,
+			Radius = 12,
 			BackgroundTransparency = 0,
 			Size = UDim2.fromScale(1, 1),
 		})
@@ -303,7 +303,7 @@ return function(import)
 					Parent = frame,
 					Fill = "TertiaryBackground",
 					Stroke = "Border",
-					Radius = 8,
+					Radius = 12,
 					Position = UDim2.fromOffset(x, buttonsY),
 					Size = UDim2.fromOffset(width, 24),
 					Text = text,

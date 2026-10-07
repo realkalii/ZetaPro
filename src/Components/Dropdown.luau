@@ -110,7 +110,7 @@ return function(import)
 				Name = name,
 				Parent = list,
 				Fill = "SecondaryBackground",
-				Radius = 6,
+				Radius = 10,
 				Size = UDim2.new(1, 0, 0, 26),
 				LayoutOrder = index,
 			})
@@ -178,7 +178,7 @@ return function(import)
 			Parent = self.Right,
 			Fill = "TertiaryBackground",
 			Stroke = "Border",
-			Radius = 8,
+			Radius = 12,
 			Size = UDim2.fromScale(1, 1),
 		})
 		self._button = button

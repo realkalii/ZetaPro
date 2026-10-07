@@ -41,7 +41,7 @@ return function(import)
 			Parent = wrapper,
 			Fill = "SecondaryBackground",
 			Stroke = "Border",
-			Radius = 14,
+			Radius = 20,
 			Size = UDim2.new(1, 0, 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			Position = UDim2.fromOffset(40, 0),

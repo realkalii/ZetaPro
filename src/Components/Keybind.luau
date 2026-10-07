@@ -79,7 +79,7 @@ return function(import)
 			Parent = self.Right,
 			Fill = "TertiaryBackground",
 			Stroke = "Border",
-			Radius = 8,
+			Radius = 12,
 			Size = UDim2.fromScale(1, 1),
 		})
 		local label = Widgets.Text(cleanup, {

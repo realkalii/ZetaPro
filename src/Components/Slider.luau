@@ -72,7 +72,7 @@ return function(import)
 			Parent = self.Right,
 			Fill = "TertiaryBackground",
 			Stroke = "Border",
-			Radius = 8,
+			Radius = 12,
 			AnchorPoint = Vector2.new(1, 0.5),
 			Position = UDim2.new(1, 0, 0.5, 0),
 			Size = UDim2.fromOffset(48, 22),
