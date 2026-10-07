@@ -16,4 +16,5 @@ return {
 	Info = Color3.fromRGB(125, 168, 255),
 	Overlay = Color3.fromRGB(0, 0, 0),
 	AcrylicTransparency = 0.08,
+	ElementTransparency = 0.4,
 }
