@@ -28,7 +28,6 @@ return function(import)
 		self._box:CaptureFocus()
 	end
 
-	-- config: Default, Placeholder, MaxLength, Numeric, Validate(text)->boolean, Live, Callback
 	return function(ctx, id, config)
 		Utility.Check(config.Default == nil or type(config.Default) == "string", "Input", id, "Default must be a string.")
 		Utility.Check(config.MaxLength == nil or type(config.MaxLength) == "number", "Input", id, "MaxLength must be a number.")
@@ -39,10 +38,12 @@ return function(import)
 		local holder, stroke = Widgets.Surface(cleanup, {
 			Parent = self.Right,
 			Fill = "TertiaryBackground",
-			Stroke = "Border",
+			Transparency = "ElementTransparency",
+			Stroke = "Text",
 			Radius = 12,
 			Size = UDim2.fromScale(1, 1),
 		})
+		stroke.Transparency = 0.8
 		local box = Widgets.Text(cleanup, {
 			Class = "TextBox",
 			Name = "Box",
@@ -67,8 +68,8 @@ return function(import)
 		Icons.Create(clear, "x", { Size = 12, Position = UDim2.fromOffset(4, 4), Cleanup = cleanup })
 
 		local focused = false
-		local function strokeColor()
-			return Theme.Get(focused and "Accent" or "Border")
+		local function strokeGoal()
+			return { Color = Theme.Get(focused and "Accent" or "Text"), Transparency = focused and 0.3 or 0.8 }
 		end
 		local function validate(text)
 			if config.MaxLength and #text > config.MaxLength then
@@ -105,7 +106,7 @@ return function(import)
 		end))
 		cleanup:Add(box.Focused:Connect(function()
 			focused = true
-			Animation:Play(stroke, { Color = strokeColor() }, { Duration = 0.12 })
+			Animation:Play(stroke, strokeGoal(), { Duration = 0.12 })
 		end))
 		cleanup:Add(box.FocusLost:Connect(function()
 			focused = false
@@ -113,15 +114,15 @@ return function(import)
 				self.State:Set(box.Text)
 			else
 				box.Text = self.State:Get()
-				Animation:Play(stroke, { Color = Theme.Get("Error") }, { Duration = 0.1 })
+				Animation:Play(stroke, { Color = Theme.Get("Error"), Transparency = 0.2 }, { Duration = 0.1 })
 				task.delay(0.5, function()
 					if not self._destroyed then
-						Animation:Play(stroke, { Color = strokeColor() }, { Duration = 0.2 })
+						Animation:Play(stroke, strokeGoal(), { Duration = 0.2 })
 					end
 				end)
 				return
 			end
-			Animation:Play(stroke, { Color = strokeColor() }, { Duration = 0.12 })
+			Animation:Play(stroke, strokeGoal(), { Duration = 0.12 })
 		end))
 		cleanup:Add(clear.Activated:Connect(function()
 			box.Text = ""

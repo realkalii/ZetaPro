@@ -48,6 +48,7 @@ return function(import)
 		local track = Widgets.Surface(cleanup, {
 			Parent = bar,
 			Fill = "TertiaryBackground",
+			Transparency = "ElementTransparency",
 			Radius = "Full",
 			AnchorPoint = Vector2.new(0, 0.5),
 			Position = UDim2.new(0, 6, 0.5, 0),
@@ -68,15 +69,17 @@ return function(import)
 			Position = UDim2.fromScale(0, 0.5),
 			Size = UDim2.fromOffset(12, 12),
 		})
-		local boxFrame = Widgets.Surface(cleanup, {
+		local boxFrame, boxStroke = Widgets.Surface(cleanup, {
 			Parent = self.Right,
 			Fill = "TertiaryBackground",
-			Stroke = "Border",
+			Transparency = "ElementTransparency",
+			Stroke = "Text",
 			Radius = 12,
 			AnchorPoint = Vector2.new(1, 0.5),
 			Position = UDim2.new(1, 0, 0.5, 0),
 			Size = UDim2.fromOffset(48, 22),
 		})
+		boxStroke.Transparency = 0.8
 		local box = Widgets.Text(cleanup, {
 			Class = "TextBox",
 			Parent = boxFrame,
