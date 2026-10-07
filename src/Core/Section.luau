@@ -28,7 +28,7 @@ return function(import)
 			Parent = tab.Container,
 		})
 		cleanup:Add(frame)
-		Widgets.List(frame, 6)
+		Widgets.List(frame, 10)
 		self.Frame = frame
 
 		local header = Utility.Create("Frame", {
@@ -63,7 +63,7 @@ return function(import)
 			LayoutOrder = 1,
 			Parent = frame,
 		})
-		Widgets.List(self.Container, 6)
+		Widgets.List(self.Container, 8)
 
 		self._entry = window:_IndexAdd({ Kind = "Section", Title = title, Tab = tab, Section = self, Frame = header })
 		cleanup:Add(function()

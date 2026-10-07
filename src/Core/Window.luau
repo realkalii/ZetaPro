@@ -17,7 +17,7 @@ return function(import)
 	local Window = {}
 	Window.__index = Window
 
-	local TOPBAR = 40
+	local TOPBAR = 44
 
 	function Window.new(config)
 		Utility.Check(type(config) == "table", "Window", "?", "Config must be a table.")
@@ -51,7 +51,7 @@ return function(import)
 			Parent = gui,
 			Fill = "Background",
 			Stroke = "Border",
-			Radius = 8,
+			Radius = 14,
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.fromOffset(size.X.Offset, size.Y.Offset),
@@ -83,7 +83,7 @@ return function(import)
 		local titles = Utility.Create("Frame", {
 			Name = "Titles",
 			BackgroundTransparency = 1,
-			Position = UDim2.fromOffset(16, 0),
+			Position = UDim2.fromOffset(18, 0),
 			Size = UDim2.new(0, 0, 1, 0),
 			AutomaticSize = Enum.AutomaticSize.X,
 			Parent = topbar,
@@ -122,12 +122,12 @@ return function(import)
 			Name = "Controls",
 			BackgroundTransparency = 1,
 			AnchorPoint = Vector2.new(1, 0.5),
-			Position = UDim2.new(1, -10, 0.5, 0),
-			Size = UDim2.new(0, 0, 0, 26),
+			Position = UDim2.new(1, -12, 0.5, 0),
+			Size = UDim2.new(0, 0, 0, 28),
 			AutomaticSize = Enum.AutomaticSize.X,
 			Parent = topbar,
 		})
-		Widgets.List(controls, 4, {
+		Widgets.List(controls, 6, {
 			FillDirection = Enum.FillDirection.Horizontal,
 			HorizontalAlignment = Enum.HorizontalAlignment.Right,
 			VerticalAlignment = Enum.VerticalAlignment.Center,
@@ -139,11 +139,11 @@ return function(import)
 				Parent = controls,
 				Fill = "SecondaryBackground",
 				BackgroundTransparency = 0.55,
-				Radius = 6,
-				Size = UDim2.fromOffset(26, 26),
+				Radius = "Full",
+				Size = UDim2.fromOffset(28, 28),
 				LayoutOrder = order,
 			})
-			Icons.Create(button, iconName, { Size = 13, Position = UDim2.fromOffset(6.5, 6.5), Cleanup = cleanup })
+			Icons.Create(button, iconName, { Size = 13, Position = UDim2.fromOffset(7.5, 7.5), Cleanup = cleanup })
 			Widgets.Interactive(cleanup, button, button, {})
 			cleanup:Add(button.Activated:Connect(callback))
 			return button
@@ -151,9 +151,9 @@ return function(import)
 		control("minus", 1, function()
 			self:Minimize()
 		end)
-		local controlsWidth = 26
+		local controlsWidth = 28
 		if config.CloseButton == true then
-			controlsWidth = 56
+			controlsWidth = 60
 			control("x", 2, function()
 				Utility.SafeCall("Window OnClose", config.OnClose)
 				self:Destroy()
@@ -165,22 +165,22 @@ return function(import)
 			Parent = topbar,
 			Fill = "TertiaryBackground",
 			Stroke = "Border",
-			Radius = 6,
+			Radius = 10,
 			BackgroundTransparency = 0.5,
 			AnchorPoint = Vector2.new(1, 0.5),
-			Position = UDim2.new(1, -(controlsWidth + 18), 0.5, 0),
-			Size = UDim2.fromOffset(150, 26),
+			Position = UDim2.new(1, -(controlsWidth + 20), 0.5, 0),
+			Size = UDim2.fromOffset(150, 28),
 		})
 		self._searchBox = searchBox
-		Icons.Create(searchBox, "search", { Size = 13, Position = UDim2.fromOffset(8, 6.5), Cleanup = cleanup })
+		Icons.Create(searchBox, "search", { Size = 13, Position = UDim2.fromOffset(10, 7.5), Cleanup = cleanup })
 		local searchInput = Widgets.Text(cleanup, {
 			Class = "TextBox",
 			Name = "SearchInput",
 			Parent = searchBox,
 			PlaceholderText = "Search...",
 			ClearTextOnFocus = false,
-			Position = UDim2.fromOffset(28, 0),
-			Size = UDim2.new(1, -34, 1, 0),
+			Position = UDim2.fromOffset(30, 0),
+			Size = UDim2.new(1, -38, 1, 0),
 		})
 		self._searchInput = searchInput
 
@@ -244,7 +244,7 @@ return function(import)
 			Parent = searchLayer,
 			Fill = "SecondaryBackground",
 			Stroke = "Border",
-			Radius = 6,
+			Radius = 10,
 			AnchorPoint = Vector2.new(1, 0),
 			Position = UDim2.new(1, -10, 0, TOPBAR + 6),
 			Size = UDim2.fromOffset(300, 0),
@@ -287,7 +287,7 @@ return function(import)
 					Name = "Result",
 					Parent = results,
 					Fill = "SecondaryBackground",
-					Radius = 5,
+					Radius = 8,
 					Size = UDim2.new(1, 0, 0, 42),
 					LayoutOrder = index,
 				})
@@ -736,7 +736,7 @@ return function(import)
 			Parent = layer,
 			Fill = "SecondaryBackground",
 			Stroke = "Border",
-			Radius = 6,
+			Radius = 10,
 			Size = UDim2.fromOffset(width, height),
 			GroupTransparency = 1,
 			ZIndex = 2,
