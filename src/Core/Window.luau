@@ -43,7 +43,7 @@ return function(import)
 
 		local gui = cleanup:Add(Utility.NewScreenGui("ZetaPro_Window", 100))
 		self.Gui = gui
-		local size = config.Size or UDim2.fromOffset(620, 480)
+		local size = config.Size or UDim2.fromOffset(520, 380)
 
 		local root = Widgets.Surface(cleanup, {
 			Class = "CanvasGroup",
@@ -367,15 +367,17 @@ return function(import)
 			showRestore = true
 		end
 		if showRestore then
+			local pillGui = cleanup:Add(Utility.NewScreenGui("ZetaPro_Restore", 101))
+			pillGui.IgnoreGuiInset = true
 			local control = Widgets.Surface(cleanup, {
 				Class = "CanvasGroup",
 				Name = "MinimizeControl",
-				Parent = gui,
+				Parent = pillGui,
 				Fill = "SecondaryBackground",
 				Stroke = "Border",
 				Radius = "Full",
 				AnchorPoint = Vector2.new(0.5, 0),
-				Position = UDim2.new(0.5, 0, 0, 6),
+				Position = UDim2.new(0.5, 0, 0, 10),
 				Size = UDim2.fromOffset(84, 36),
 				GroupTransparency = 1,
 				Visible = false,
