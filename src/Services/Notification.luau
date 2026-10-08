@@ -21,7 +21,7 @@ return function(import)
 			Name = "Holder",
 			BackgroundTransparency = 1,
 			AnchorPoint = Vector2.new(1, 1),
-			Position = UDim2.new(1, -16, 1, -16),
+			Position = UDim2.new(1, -6, 1, -6),
 			Size = UDim2.fromOffset(300, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			Parent = gui,
