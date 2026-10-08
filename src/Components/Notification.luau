@@ -41,7 +41,6 @@ return function(import)
 			Parent = wrapper,
 			Fill = "SecondaryBackground",
 			BackgroundTransparency = 0.45,
-			Stroke = "Border",
 			Radius = 20,
 			Size = UDim2.new(1, 0, 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
@@ -61,13 +60,13 @@ return function(import)
 		})
 		Widgets.Padding(body, 14)
 
-		local icon = Icons.Create(body, config.Icon or kind.Icon, { Size = 16, Color = kind.Token, Cleanup = cleanup })
-		icon.Instance.Position = UDim2.fromOffset(0, 1)
+		local icon = Icons.Create(body, config.Icon or kind.Icon, { Size = 22, Color = kind.Token, Cleanup = cleanup })
+		icon.Instance.Position = UDim2.fromOffset(0, 0)
 
 		local column = Utility.Create("Frame", {
 			BackgroundTransparency = 1,
-			Position = UDim2.fromOffset(26, 0),
-			Size = UDim2.new(1, -52, 0, 0),
+			Position = UDim2.fromOffset(34, 0),
+			Size = UDim2.new(1, -60, 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			Parent = body,
 		})
@@ -87,8 +86,8 @@ return function(import)
 		Widgets.Text(cleanup, {
 			Parent = column,
 			Text = content,
-			Color = "MutedText",
-			TextSize = 12,
+			Color = "Text",
+			TextSize = 13,
 			TextWrapped = true,
 			Size = UDim2.new(1, 0, 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
