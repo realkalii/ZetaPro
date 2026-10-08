@@ -1,63 +1,58 @@
 <div align="center">
+  <img src="assets/screenshots/logo.png" alt="ZetaPro logo" width="420">
 
-![logo/https://discord.gg/9EPXws3Ybg](assets/screenshots/logo.png)
-    
-![preview/https://discord.gg/9EPXws3Ybg](assets/screenshots/preview.png)
+# ZΞTA Pro
 
-# **A dark, modular UI library for Roblox Scripts Hubs.**
-
-![Version](https://img.shields.io/badge/version-1.0.1-white?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square)
-![Luau](https://img.shields.io/badge/Luau-typed-blue?style=flat-square)
+<p><b> A modern UI library for Roblox Script Hubs.</b></p>
 
 </div>
-
 ---
-
-## Features
-
-- Window with drag, resize, minimize/restore and global search
-- Tabs, sections and a compact sidebar on smaller windows
-- Button, Toggle, Slider, Dropdown, MultiDropdown, Input, Keybind, Colorpicker, Label, Divider
-- Theme engine with hot swap — Dark, Light, Midnight, Zeta, and custom themes
-- Icon families (Lucide, Solar, Geist, Craft, SF Symbols) via Footagesus/Icons
-- Notifications with stacking, progress bar and manual close
-- Acrylic effect with graceful fallback
-- Config export, import and reset `writefile`
-- Full cleanup on `Window:Destroy()`
 
 ## Installation
 
-```lua
-local Zeta = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"
-))()
-```
+### Stable
 
-## Usage
-[Docs](https://realkalii.github.io/ZetaPro-docs)
-
-## Icons
-Icon families include:
-- Lucide
-- Solar
-- Geist
-- Craft
-- SF Symbols
+The `main` branch contains the latest stable version of ZetaPro.
 
 ```lua
-Icon = "home"
-Icon = "lucide:settings"
-Icon = "solar:bomb"
-Icon = "geist:code"
+loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 ```
 
-`Icon = "home"` keeps using the built-in local set. For `family:name`, the real icons of that family are downloaded once and cached in `ZetaPro/icons/`. If a family cannot be loaded, ZetaPro falls back to its built-in local icons, so the UI never breaks. Solar names carry a variant (`-linear`, `-outline`, `-bold`, `-broken`, `-line-duotone`, `-bold-duotone`); `solar:bomb` picks the first one available, in that order.
+### Beta
 
-The icon sets themselves belong to their authors and keep their own licenses: [Lucide](https://github.com/lucide-icons/lucide), [Craft](https://www.figma.com/community/file/1415718327120418204), [Geist](https://vercel.com/geist/icons), [Solar](https://icones.js.org/collection/solar) and [SF Symbols](https://sf-symbols-one.vercel.app/)
+The `beta` branch contains the latest version currently being tested.
+
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/beta/src/init.luau"))()
+```
+
+> [!WARNING]
+> Beta versions may contain bugs or unfinished features and are mainly intended for testing.
+
+### Specific version
+
+You can use a specific release through its GitHub tag.
+
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/v1.0.1/src/init.luau"))()
+```
+
+This keeps your script on that version until you manually change the tag.
+
+---
+
+## Links
+
+- For the full API, examples and guides, see the [documentation](https://github.com/realkalii/ZetaPro/tree/main/docs).
+
+- Join our [discord community](https://discord.gg/9EPXws3Ybg)
+
+---
 
 ## Credits
 
-- [dawid-scripts/Fluent](https://github.com/dawid-scripts/Fluent) — UX, component set and API shape inspiration
-- [Footagesus/Icons](https://github.com/Footagesus/Icons) — icon families (Lucide, Solar, Geist, Craft, SF Symbols)
-- [Icons.rest](https://icons.rest) - icons used in ZetaPro (nice site btw)
+| Project | Contribution |
+| --- | --- |
+| [dawid-scripts/Fluent](https://github.com/dawid-scripts/Fluent) | UX, components and API inspiration |
+| [Footagesus/Icons](https://github.com/Footagesus/Icons) | Icon families |
+| [Icons.rest](https://icons.rest) | Source for icons |
