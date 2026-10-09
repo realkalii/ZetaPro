@@ -1,5 +1,5 @@
 -- One of each component, including programmatic control.
-local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/ZETA-ORG/ZetaPro/main/src/init.luau"))()
+local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
 local Window = Zeta:CreateWindow({ Title = "Components", SubTitle = "Reference" })
 local Tab = Window:AddTab({ Title = "All", Icon = "code" })

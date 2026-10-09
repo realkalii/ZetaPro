@@ -1,7 +1,7 @@
 -- Theme hot swap and custom themes.
-local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/ZETA-ORG/ZetaPro/main/src/init.luau"))()
+local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
-Zeta:RegisterTheme("Crimson", {
+Zeta:RegisterTheme("MyRedTheme", {
 	Background = Color3.fromRGB(13, 9, 10),
 	Secondary = Color3.fromRGB(22, 14, 16),
 	Tertiary = Color3.fromRGB(32, 20, 23),
@@ -13,18 +13,18 @@ Zeta:RegisterTheme("Crimson", {
 })
 
 -- Themes can also extend another one.
-Zeta:RegisterTheme("CrimsonLight", {
-	Base = "Crimson",
+Zeta:RegisterTheme("MyRedLight", {
+	Base = "MyRedTheme",
 	Text = Color3.fromRGB(255, 255, 255),
 })
 
-local Window = Zeta:CreateWindow({ Title = "Themes", SubTitle = "Hot swap", Theme = "Crimson" })
+local Window = Zeta:CreateWindow({ Title = "Themes", SubTitle = "Hot swap", Theme = "Revolt Pure Red" })
 local Tab = Window:AddTab({ Title = "Themes", Icon = "settings" })
 
 Tab:AddDropdown("Theme", {
 	Title = "Theme",
 	Values = Zeta:GetThemes(),
-	Default = "Crimson",
+	Default = "Revolt Pure Red",
 	Callback = function(name)
 		Zeta:SetTheme(name) -- every element updates without being rebuilt
 	end,

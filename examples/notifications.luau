@@ -1,5 +1,5 @@
 -- Notifications: types, stacking, manual close, persistence.
-local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/ZETA-ORG/ZetaPro/main/src/init.luau"))()
+local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
 local Window = Zeta:CreateWindow({ Title = "Notifications", SubTitle = "Demo" })
 local Tab = Window:AddTab({ Title = "Notify", Icon = "bell" })

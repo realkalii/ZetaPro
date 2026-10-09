@@ -1,7 +1,7 @@
 -- Internal test suite. Run in Studio (LocalScript) or an executor.
 -- Covers: Window, Tabs, Sections, Components, Callbacks, State, Themes, Icons,
 -- Notifications, Search, Destroy/Cleanup and repeated create/destroy cycles.
-local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/ZETA-ORG/ZetaPro/main/src/init.luau"))()
+local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
 local passed, failed = 0, 0
 local function check(name, condition, detail)
@@ -19,7 +19,7 @@ end
 local baseline = Zeta:GetStats()
 
 section("Window / Tabs / Sections")
-local Window = Zeta:CreateWindow({ Title = "Tests", MinimizeKey = Enum.KeyCode.RightShift, RestoreButton = true })
+local Window = Zeta:CreateWindow({ Title = "Tests", MinimizeKey = Enum.KeyCode.RightShift })
 local Main = Window:AddTab({ Title = "Main", Icon = "home" })
 local Other = Window:AddTab({ Title = "Other", Icon = "settings" })
 local Movement = Main:AddSection("Movement")
@@ -117,10 +117,10 @@ note:Close()
 local dialog = Window:CreateDialog({ Title = "Dialog", Content = "Body" })
 dialog:AddButton({ Title = "OK" })
 dialog:Close()
-Window:Minimize()
-check("minimized", Window:IsMinimized())
-Window:Restore()
-check("restored", not Window:IsMinimized())
+Window:_Minimize()  -- internal UI regression test
+check("minimized", Window._minimized)
+Window:_Restore()  -- internal UI regression test
+check("restored", not Window._minimized)
 
 section("Destroy / Cleanup")
 Window:Destroy()
