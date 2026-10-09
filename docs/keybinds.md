@@ -1,10 +1,14 @@
 # Keybind
 
 ```lua
-local Keybind = Tab:AddKeybind("ToggleUI", {
-    Title = "Toggle UI",
+local Enabled = false
+local Keybind = Tab:AddKeybind("ActionKey", {
+    Title = "Toggle Action",
     Default = Enum.KeyCode.RightShift,
-    Callback = function(key) Window:Toggle() end,        -- fires when the key is pressed
+    Callback = function(key)
+        Enabled = not Enabled
+        print("Action enabled:", Enabled)
+    end,
     ChangedCallback = function(key) print("rebound", key) end,
 })
 ```
