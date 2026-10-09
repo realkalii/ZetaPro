@@ -54,5 +54,4 @@ This keeps your script on that version until you manually change the tag.
 | Project | Contribution |
 | --- | --- |
 | [dawid-scripts/Fluent](https://github.com/dawid-scripts/Fluent) | UX, components and API inspiration |
-| [Footagesus/Icons](https://github.com/Footagesus/Icons) | Icon families |
 | [Icons.rest](https://icons.rest) | Source for icons |
