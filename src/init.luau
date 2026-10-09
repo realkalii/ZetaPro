@@ -125,9 +125,12 @@ local Input = import("Services/Input")
 local Tooltip = import("Services/Tooltip")
 local Notification = import("Services/Notification")
 
-for _, name in { "Dark", "Light", "Midnight", "Zeta", "Pure Red" } do
-	Theme.Register(name, import("Themes/" .. name))
+
+for _, name in { "Dark", "Light", "Midnight", "Zeta" } do
+    Theme.Register(name, import("Themes/" .. name))
 end
+
+Theme.Register("Pure Red", import("Themes/PureRed"))
 Theme.Register("Halloween 2026", import("Themes/Halloween2026"))
 Theme.Set("Dark")
 
