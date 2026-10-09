@@ -12,7 +12,7 @@
 
 ### Stable
 
-The `main` branch contains the latest stable version of ZetaPro.
+The `main` branch contains the latest version of ZetaPro.
 
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
