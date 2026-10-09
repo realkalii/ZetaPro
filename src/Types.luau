@@ -46,7 +46,6 @@ export type WindowConfig = {
 	CloseButton: boolean?,
 	OnClose: (() -> ())?,
 	SearchEnabled: boolean?,
-	RestoreButton: boolean?,
 	MinimizeKey: Enum.KeyCode?,
 }
 
@@ -152,10 +151,6 @@ export type Window = {
 	SetSubtitle: (self: Window, text: string?) -> (),
 	SetTheme: (self: Window, name: string) -> boolean,
 	SetSearchEnabled: (self: Window, enabled: boolean) -> (),
-	Minimize: (self: Window) -> (),
-	Restore: (self: Window) -> (),
-	Toggle: (self: Window) -> (),
-	IsMinimized: (self: Window) -> boolean,
 	CreateDialog: (self: Window, config: { Title: string, Content: string?, Buttons: { { Title: string, Callback: (() -> ())?, Primary: boolean? } }? }) -> any,
 	Destroy: (self: Window) -> (),
 }
