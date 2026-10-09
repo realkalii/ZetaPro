@@ -149,7 +149,7 @@ return function(import)
 			return button
 		end
 		control("minus", 1, function()
-			self:Minimize()
+			self:_Minimize()
 		end)
 		local controlsWidth = 28
 		if config.CloseButton == true then
@@ -364,70 +364,64 @@ return function(import)
 			})
 		end
 
-		local showRestore = config.RestoreButton
-		if showRestore == nil then
-			showRestore = true
-		end
-		if showRestore then
-			local pillGui = cleanup:Add(Utility.NewScreenGui("ZetaPro_Restore", 101))
-			pillGui.IgnoreGuiInset = true
-			local control = Widgets.Surface(cleanup, {
-				Class = "CanvasGroup",
-				Name = "MinimizeControl",
-				Parent = pillGui,
-				Fill = "SecondaryBackground",
-				Transparency = "ElementTransparency",
-				Stroke = "Border",
-				Radius = "Full",
-				AnchorPoint = Vector2.new(0.5, 0),
-				Position = UDim2.new(0.5, 0, 0, 10),
-				Size = UDim2.fromOffset(76, 32),
-				GroupTransparency = 0,
-				Visible = false,
-			})
-			local controlScale = Instance.new("UIScale")
-			controlScale.Scale = 0.92
-			controlScale.Parent = control
-			Widgets.Text(cleanup, {
-				Name = "Brand",
-				Parent = control,
-				Text = "ZΞ",
-				Bold = true,
-				TextSize = 14,
-				TextXAlignment = Enum.TextXAlignment.Center,
-				Size = UDim2.new(0, 42, 1, 0),
-			})
-			Widgets.Surface(cleanup, {
-				Name = "Separator",
-				Parent = control,
-				Fill = "Border",
-				Radius = 0,
-				BackgroundTransparency = 0.25,
-				AnchorPoint = Vector2.new(0, 0.5),
-				Position = UDim2.new(0, 42, 0.5, 0),
-				Size = UDim2.fromOffset(1, 14),
-			})
-			local chevron = Icons.Create(control, "chevron-down", {
-				Size = 14,
-				Position = UDim2.new(0, 50, 0.5, -7),
-				Color = "MutedText",
-				Cleanup = cleanup,
-			})
-			local hit = Utility.Create("TextButton", {
-				Name = "Hit",
-				BackgroundTransparency = 1,
-				Text = "",
-				Size = UDim2.fromScale(1, 1),
-				ZIndex = 5,
-				Parent = control,
-			})
-			Widgets.Interactive(cleanup, control, hit, {})
-			cleanup:Add(hit.Activated:Connect(function()
-				self:Restore()
-			end))
+		local pillGui = cleanup:Add(Utility.NewScreenGui("ZetaPro_Restore", 101))
+		pillGui.IgnoreGuiInset = true
+		local control = Widgets.Surface(cleanup, {
+			Class = "CanvasGroup",
+			Name = "MinimizeControl",
+			Parent = pillGui,
+			Fill = "SecondaryBackground",
+			Transparency = "ElementTransparency",
+			Stroke = "Border",
+			Radius = "Full",
+			AnchorPoint = Vector2.new(0.5, 0),
+			Position = UDim2.new(0.5, 0, 0, 10),
+			Size = UDim2.fromOffset(76, 32),
+			GroupTransparency = 0,
+			Visible = false,
+		})
+		local controlScale = Instance.new("UIScale")
+		controlScale.Scale = 0.92
+		controlScale.Parent = control
+		Widgets.Text(cleanup, {
+			Name = "Brand",
+			Parent = control,
+			Text = "ZΞ",
+			Bold = true,
+			TextSize = 14,
+			TextXAlignment = Enum.TextXAlignment.Center,
+			Size = UDim2.new(0, 42, 1, 0),
+		})
+		Widgets.Surface(cleanup, {
+			Name = "Separator",
+			Parent = control,
+			Fill = "Border",
+			Radius = 0,
+			BackgroundTransparency = 0.25,
+			AnchorPoint = Vector2.new(0, 0.5),
+			Position = UDim2.new(0, 42, 0.5, 0),
+			Size = UDim2.fromOffset(1, 14),
+		})
+		local chevron = Icons.Create(control, "chevron-down", {
+			Size = 14,
+			Position = UDim2.new(0, 50, 0.5, -7),
+			Color = "MutedText",
+			Cleanup = cleanup,
+		})
+		local hit = Utility.Create("TextButton", {
+			Name = "Hit",
+			BackgroundTransparency = 1,
+			Text = "",
+			Size = UDim2.fromScale(1, 1),
+			ZIndex = 5,
+			Parent = control,
+		})
+		Widgets.Interactive(cleanup, control, hit, {})
+		cleanup:Add(hit.Activated:Connect(function()
+			self:_Restore()
+		end))
 
-			self._control = { Frame = control, Scale = controlScale, Chevron = chevron.Instance }
-		end
+		self._control = { Frame = control, Scale = controlScale, Chevron = chevron.Instance }
 
 		if self.Acrylic and config.Blur ~= false and Acrylic.Supported() then
 			self._blur = Acrylic.new(cleanup, 10)
@@ -524,7 +518,7 @@ return function(import)
 			return
 		end
 		if self._minimized then
-			self:Restore()
+			self:_Restore()
 		end
 		self:SelectTab(tab)
 		if entry.Kind == "Tab" then
@@ -629,7 +623,7 @@ return function(import)
 		if key ~= nil then
 			Utility.Check(typeof(key) == "EnumItem", "Window", "MinimizeKey", "MinimizeKey must be an Enum.KeyCode.")
 			self._minimizeBind = self.Cleanup:Add(Input.AddBind(key, function()
-				self:Toggle()
+				self:_ToggleMinimize()
 			end, "Window toggle"))
 		end
 	end
@@ -659,7 +653,7 @@ return function(import)
 		end
 	end
 
-	function Window:Minimize()
+	function Window:_Minimize()
 		if self._minimized or self._destroyed then
 			return
 		end
@@ -673,7 +667,7 @@ return function(import)
 		self.MinimizedChanged:Fire(true)
 	end
 
-	function Window:Restore()
+	function Window:_Restore()
 		if not self._minimized or self._destroyed then
 			return
 		end
@@ -688,20 +682,12 @@ return function(import)
 		self.MinimizedChanged:Fire(false)
 	end
 
-	function Window:ToggleMinimize()
+	function Window:_ToggleMinimize()
 		if self._minimized then
-			self:Restore()
+			self:_Restore()
 		else
-			self:Minimize()
+			self:_Minimize()
 		end
-	end
-
-	function Window:Toggle()
-		self:ToggleMinimize()
-	end
-
-	function Window:IsMinimized()
-		return self._minimized
 	end
 
 	function Window:CreateDialog(config)

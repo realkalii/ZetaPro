@@ -7,7 +7,7 @@ return function(import)
 	local Widgets = {}
 
 	local TEXT_KEYS = { Color = true, Bold = true, Class = true }
-	local SURFACE_KEYS = { Fill = true, Stroke = true, Radius = true, Class = true }
+	local SURFACE_KEYS = { Fill = true, Stroke = true, Radius = true, Class = true, Transparency = true }
 
 	local function without(props, keys)
 		local out = {}
@@ -42,14 +42,15 @@ return function(import)
 		return label
 	end
 
-	-- props: Fill, Stroke (theme tokens), Radius (number | "Full"), Class.
+	-- props: Fill, Stroke (theme tokens), Radius (number | "Full"), Class,
+	-- Transparency (theme token | number, reactive BackgroundTransparency).
 	function Widgets.Surface(cleanup, props)
 		local raw = without(props, SURFACE_KEYS)
-		local fill, strokeToken, radius = props.Fill, props.Stroke, props.Radius
+		local fill, strokeToken, radius, transparency = props.Fill, props.Stroke, props.Radius, props.Transparency
 		if radius == nil then
-			radius = 6
+			radius = 12
 		end
-		if fill == nil and raw.BackgroundTransparency == nil then
+		if fill == nil and transparency == nil and raw.BackgroundTransparency == nil then
 			raw.BackgroundTransparency = 1
 		end
 		local instance = Utility.Create(props.Class or "Frame", raw)
@@ -70,6 +71,9 @@ return function(import)
 		Theme.BindFn(function()
 			if fill then
 				instance.BackgroundColor3 = Theme.Get(fill)
+			end
+			if transparency ~= nil then
+				instance.BackgroundTransparency = type(transparency) == "number" and transparency or Theme.Get(transparency)
 			end
 			if stroke then
 				stroke.Color = Theme.Get(strokeToken)

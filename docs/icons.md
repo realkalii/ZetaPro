@@ -1,121 +1,103 @@
 # Icons
 
-ZetaPro supports a few different ways to use icons:
+ZETA Pro uses built-in Lucide icon names from [icons.rest](https://www.icons.rest/). External icon family prefixes are no longer supported.
 
-``` lua
-Icon = "home"
-Icon = Zeta.Icons.Home
-Icon = "solar:bomb"
-Icon = "geist:code"
-Icon = { Type = "Image", Source = "rbxassetid://...", Tint = true }
-Icon = { Type = "Url", Source = "https://.../icon.png", Tint = true }
+```lua
+Window:AddTab({ Title = "Main", Icon = "home" })
+Section:AddButton({ Title = "Run", Icon = Zeta.Icons.Home })
 ```
 
-# Simple icons
+## Recommended icons for script hubs
 
-Names like ""home"", ""search"" or ""settings"" use the built-in "icons.rest" (https://www.icons.rest/) catalog. It contains Lucide icons mapped to Roblox asset IDs, so you don't need to download or set anything up yourself.
+The following are suggestions, not predefined categories. Names can be used directly in the `Icon` property.
 
-If the name doesn't exist in the catalog, ZetaPro won't try to replace it with a different icon. The icon simply stays hidden, and a warning is printed once in the console.
+| Category | Lucide names |
+|---|---|
+| Main / Home | `home`, `layout-dashboard`, `panels-top-left`, `layout-grid` |
+| Auto Farm | `wheat`, `sprout`, `repeat`, `coins` |
+| Combat / PvP | `swords`, `crosshair`, `target`, `shield` |
+| Player | `user-round`, `users`, `activity`, `heart` |
+| Movement / Fly | `zap`, `move`, `wind`, `plane` |
+| ESP / Visuals | `eye`, `scan-eye`, `scan`, `focus` |
+| Teleport | `map-pin`, `navigation`, `map`, `compass` |
+| Inventory | `backpack`, `package`, `gem`, `box` |
+| Scripts / Tools | `code`, `terminal`, `wrench`, `file-code` |
+| Settings | `settings`, `sliders-horizontal`, `cog`, `sliders` |
 
-You can also access the catalog directly:
+## `Zeta.Icons:Get()`
 
-``` lua
-Zeta.Icons:Get("home")
-Zeta.Icons:List()
+```lua
+local Icon = Zeta.Icons:Get("home")
+if Icon then
+    print(Icon.Type)
+end
 ```
 
-"Get()" returns the icon specification when the icon exists, or "nil" when it doesn't. "List()" returns the available icons.rest names.
+Returns a resolved icon specification or `nil` when the name cannot be resolved. Valid names include `"home"` and `"settings"`.
 
-Icon Families
+## `Zeta.Icons:List()`
 
-For icons from a specific family, use the "family:name" format:
+```lua
+local Icons = Zeta.Icons:List()
+print("Available icons:", #Icons)
+for _, name in ipairs(Icons) do
+    print(name)
+end
+```
 
-Icon = "lucide:heart"
-Icon = "solar:bomb"
-Icon = "geist:code"
+Returns built-in Lucide names, sorted alphabetically.
 
-ZetaPro currently supports:
+## Custom providers
 
-- "lucide"
-- "solar"
-- "geist"
-- "craft"
-- "sfsymbols"
-
-These families are provided by "Footagesus/Icons" (https://github.com/Footagesus/Icons)
-
-Family data is downloaded only when needed and then cached locally in:
-
-ZetaPro/icons/<family>.lua
-
-If the family hasn't loaded yet, its icons stay hidden. Once the data is ready, the icons appear automatically. If a requested icon doesn't exist in that family, it is treated as invalid.
-
-You can delete the cached family file at any time to download a fresh copy.
-
-Solar Variants
-
-Solar icons have several variants, including:
-
--linear
--outline
--bold
--broken
--line-duotone
--bold-duotone
-
-Not every Solar icon has every variant.
-
-If you use:
-
-Icon = "solar:bomb"
-
-ZetaPro looks for the available variants in this order:
-
-linear → outline → bold → broken → line-duotone → bold-duotone
-
-You can also request a specific variant:
-
-Icon = "solar:bomb-bold-duotone"
-
-Custom Providers
-
-You can register your own icon provider when you need custom icons:
-``` lua
+```lua
 Zeta:RegisterIconProvider("Mine", function(name)
-    return {
-        Type = "Image",
-        Source = "rbxassetid://..."
-    }
+    if name == "logo" then
+        return { Type = "Image", Source = "rbxassetid://123", Tint = true }
+    end
+    return nil
 end)
-```
 Zeta:SetIconProvider("Mine")
-
-The custom provider gets the complete icon name first. If it doesn't recognize the name and returns "nil", ZetaPro continues looking through the family resolver and then the icons.rest catalog.
-
-This makes it possible to add your own icons without changing the built-in catalog.
-
-# Remote Icons
-
-Remote images are supported, but they're intentionally opt-in.
-``` lua
-Icon = {
-    Type = "Url",
-    Source = "https://.../icon.png",
-    Tint = true
-}
 ```
-Remote icons require "Http", "FileSystem" and "getcustomasset".
 
-Only HTTPS PNG files up to 256 KB are accepted. Images are cached in "ZetaPro/icons/" so they don't need to be downloaded every time.
+The active custom provider is tried first; if it returns `nil`, ZETA Pro checks the built-in Lucide catalog.
 
-While a remote icon is loading, it stays empty. If the download fails for any reason, the icon is simply hidden instead of interrupting the rest of the UI.
+## Image icons
 
-# Changing Icons
+```lua
+Section:AddButton({
+    Title = "Custom Icon",
+    Icon = { Type = "Image", Source = "rbxassetid://123", Tint = false },
+    Callback = function() print("Button clicked") end,
+})
+```
 
-Icons can be changed at runtime without recreating the component:
-``` lua
-Tab:SetIcon("x")
+`Tint = true` uses the current theme color. `Tint = false` keeps the original image colors. Replace `123` with a valid Roblox asset ID.
+
+## Remote icons
+
+```lua
+Section:AddButton({
+    Title = "Remote Icon",
+    Icon = { Type = "Url", Source = "https://example.com/icon.png", Tint = false },
+    Callback = function() print("Button clicked") end,
+})
+```
+
+The example URL is a placeholder. Only HTTPS PNG files up to 256 KB are accepted. HTTP access, filesystem access, and `getcustomasset` (or supported equivalent) are required. Successful images are cached in `ZetaPro/icons/`, and failed images use a built-in fallback icon.
+
+## Hot swap
+
+```lua
+Tab:SetIcon("settings")
 Component:SetIcon("check")
+Component:SetIcon("circle-check")
 Component:SetIcon(nil)
 ```
-This only updates the icon element, leaving the rest of the component untouched.
+
+`SetIcon()` updates existing icons in place without recreating the component.
+
+## Credits and compatibility
+
+ZETA Pro uses Lucide icons through [icons.rest](https://www.icons.rest/), which maps names to Roblox asset IDs. Lucide icons are licensed under the ISC License; see [Lucide](https://github.com/lucide-icons/lucide) for licensing details.
+
+Existing plain Lucide names remain supported. Old prefixed names such as `solar:`, `geist:`, `craft:`, and `sfsymbols:` must be replaced with Lucide names. Custom image icons and registered providers remain supported.

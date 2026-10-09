@@ -90,11 +90,11 @@ Combat:AddInput("Username", {
 	end,
 })
 
-Combat:AddKeybind("ToggleUI", {
-	Title = "Toggle UI",
+Combat:AddKeybind("ActionKey", {
+	Title = "Action hotkey",
 	Default = Enum.KeyCode.RightShift,
 	Callback = function()
-		Window:Toggle()
+		Zeta:Notify({ Title = "Hotkey", Content = "Action hotkey pressed.", Type = "Info" })
 	end,
 })
 

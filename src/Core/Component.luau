@@ -14,14 +14,12 @@ return function(import)
 	Base.__index = Base
 	Component.Base = Base
 
-	-- Factory signature: factory(ctx, id, config) -> component object.
 	function Component.Register(name, factory)
 		Utility.Check(type(name) == "string" and string.match(name, "^%u%w*$") ~= nil, "Component", name, "Name must be PascalCase and alphanumeric.")
 		Utility.Check(type(factory) == "function", "Component", name, "Factory must be a function.")
 		Component.Registry[name] = factory
 	end
 
-	-- Component without a visual row (used directly by Divider).
 	function Component.NewBare(ctx, class, kind, id, config)
 		Utility.Check(type(config) == "table", kind, id, "Config must be a table.")
 		local self = setmetatable({}, class)
@@ -45,7 +43,6 @@ return function(import)
 		return self
 	end
 
-	-- opts: RightWidth, RightHeight, MinHeight, Flat, NoSearch
 	function Component.New(ctx, class, kind, id, config, opts)
 		opts = opts or {}
 		local self = Component.NewBare(ctx, class, kind, id, config)
@@ -56,14 +53,20 @@ return function(import)
 			Name = kind,
 			Parent = ctx.Parent,
 			Fill = (not flat) and "SecondaryBackground" or nil,
-			Stroke = (not flat) and "Border" or nil,
-			Radius = 6,
-			Size = UDim2.new(1, 0, 0, opts.MinHeight or 40),
+			Transparency = (not flat) and "ComponentTransparency" or nil,
+			Stroke = (not flat) and "Text" or nil,
+			Radius = 16,
+			Size = UDim2.new(1, 0, 0, opts.MinHeight or 48),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			LayoutOrder = ctx.Order(),
 		})
 		cleanup:Add(frame)
 		self.Frame, self.Stroke = frame, stroke
+		if stroke then
+			Theme.BindFn(function()
+				stroke.Transparency = Theme.Get("ComponentStrokeTransparency")
+			end, cleanup)
+		end
 
 		local rightWidth = opts.RightWidth or 0
 		local left = Utility.Create("Frame", {
@@ -73,8 +76,8 @@ return function(import)
 			Size = UDim2.new(1, rightWidth > 0 and -(rightWidth + 12) or 0, 0, 0),
 			Parent = frame,
 		})
-		Utility.Create("UIPadding", { PaddingRight = UDim.new(0, 10), PaddingLeft = UDim.new(0, 12), PaddingTop = UDim.new(0, 11), PaddingBottom = UDim.new(0, 11), Parent = left })
-		Widgets.List(left, 8, { FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center })
+		Utility.Create("UIPadding", { PaddingRight = UDim.new(0, 14), PaddingLeft = UDim.new(0, 16), PaddingTop = UDim.new(0, 15), PaddingBottom = UDim.new(0, 15), Parent = left })
+		Widgets.List(left, 12, { FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center })
 
 		self._iconHolder = Utility.Create("Frame", {
 			Name = "IconHolder",
@@ -92,7 +95,7 @@ return function(import)
 			LayoutOrder = 2,
 			Parent = left,
 		})
-		Widgets.List(self._textCol, 2)
+		Widgets.List(self._textCol, 4)
 
 		local title = config.Title or config.Text or ""
 		local description = config.Description or config.Content or ""
@@ -157,8 +160,6 @@ return function(import)
 		return self
 	end
 
-	-- Binds the component to a state (Config state when `id` is given, a
-	-- private state otherwise). `render(value, animate)` paints the value.
 	function Component.BindValue(self, id, default, render)
 		local state
 		if id then
@@ -283,7 +284,7 @@ return function(import)
 				Parent = self.Frame,
 				Fill = "Background",
 				BackgroundTransparency = 0.45,
-				Radius = 6,
+				Radius = 16,
 				Active = true,
 				ZIndex = 10,
 				Size = UDim2.fromScale(1, 1),
@@ -312,8 +313,6 @@ return function(import)
 		self.Cleanup:Clean()
 	end
 
-	-- Containers (Tab, Section) get dynamic AddXxx methods for every
-	-- registered component, including ones registered later.
 	function Component.Add(owner, name, first, second)
 		local factory = Component.Registry[name]
 		local id, config

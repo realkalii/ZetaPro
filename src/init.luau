@@ -6,16 +6,16 @@
 
 	]]
 
-local VERSION = "1.0.1"
-local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/"
+local VERSION = "1.0.2"
+local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/beta/src/"
 
 local MODULES = {
 	"Core/Signal", "Core/State", "Core/Capabilities", "Core/Utility", "Core/Config", "Core/Theme",
 	"Core/Widgets", "Core/Search", "Core/Component", "Core/Section", "Core/Tab", "Core/Window",
-	"Themes/Default", "Themes/Dark", "Themes/Light", "Themes/Midnight", "Themes/Zeta",
+	"Themes/Default", "Themes/Dark", "Themes/Light", "Themes/Midnight", "Themes/Zeta", "Themes/PureRed", "Themes/Halloween2026",
 	"Services/Cleanup", "Services/Animation", "Services/Input", "Services/Drag", "Services/Acrylic",
 	"Services/Tooltip", "Services/Notification",
-	"Icons/Icon", "Icons/Registry", "Icons/Providers",
+	"Icons/Icon", "Icons/Catalog", "Icons/Registry", "Icons/Providers",
 	"Components/Button", "Components/Toggle", "Components/Slider", "Components/Dropdown",
 	"Components/MultiDropdown", "Components/Input", "Components/Keybind", "Components/Colorpicker",
 	"Components/Paragraph", "Components/Label", "Components/Divider", "Components/Notification",
@@ -30,7 +30,6 @@ do
 	globalEnv = ok and env or _G
 end
 
--- Re-executing the script replaces the previous instance cleanly.
 if type(globalEnv.__ZetaPro) == "table" and type(globalEnv.__ZetaPro.Unload) == "function" then
 	pcall(function()
 		globalEnv.__ZetaPro:Unload()
@@ -126,9 +125,13 @@ local Input = import("Services/Input")
 local Tooltip = import("Services/Tooltip")
 local Notification = import("Services/Notification")
 
+
 for _, name in { "Dark", "Light", "Midnight", "Zeta" } do
-	Theme.Register(name, import("Themes/" .. name))
+    Theme.Register(name, import("Themes/" .. name))
 end
+
+Theme.Register("Pure Red", import("Themes/PureRed"))
+Theme.Register("Halloween 2026", import("Themes/Halloween2026"))
 Theme.Set("Dark")
 
 for _, name in {

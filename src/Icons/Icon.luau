@@ -136,6 +136,10 @@ return function(import)
 				Utility.Log("Unknown icon:", tostring(newSpec))
 				resolved = Providers.Fallback
 			end
+			if not resolved then
+				container.Visible = false
+				return
+			end
 			if resolved.Type == "Vector" then
 				drawVector(resolved)
 			elseif resolved.Type == "Image" then
@@ -150,7 +154,10 @@ return function(import)
 						image.Image = asset
 					elseif not asset then
 						clear()
-						drawVector(Providers.Fallback)
+						local fallback = Providers.Fallback
+						if fallback then
+							newImage(fallback.Source, fallback.Tint)
+						end
 						paint()
 					end
 				end)

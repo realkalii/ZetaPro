@@ -2,7 +2,7 @@
 
 ## 1. Load the library
 ```lua
-local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/ZETA-ORG/ZetaPro/main/src/init.luau"))()
+local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 ```
 In Studio use Rojo and `require` the `src` folder.
 

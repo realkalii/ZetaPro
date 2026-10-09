@@ -8,7 +8,6 @@ return function(import)
 	local Dropdown = setmetatable({}, { __index = Component.Base })
 	Dropdown.__index = Dropdown
 
-	-- Single: value is a string (or an index). Multi: value is { [name] = boolean }.
 	function Dropdown:_Normalize(value)
 		if self.Multi then
 			if type(value) ~= "table" then
@@ -110,7 +109,8 @@ return function(import)
 				Name = name,
 				Parent = list,
 				Fill = "SecondaryBackground",
-				Radius = 4,
+				Transparency = 1,
+				Radius = 10,
 				Size = UDim2.new(1, 0, 0, 26),
 				LayoutOrder = index,
 			})
@@ -129,7 +129,7 @@ return function(import)
 				Cleanup = cleanup,
 			})
 			checks[name] = check
-			Widgets.Interactive(cleanup, row, row, {})
+			Widgets.Interactive(cleanup, row, row, { Alpha = { 1, 0.6, 0.45 } })
 			cleanup:Add(row.Activated:Connect(function()
 				if self.Multi then
 					local value = table.clone(self.State:Get() or {})
@@ -172,15 +172,17 @@ return function(import)
 		local valid, default = self:_Normalize(multi and (config.Default or {}) or config.Default)
 		Utility.Check(valid, self.Kind, id, multi and "Default must be a table ({ Name = true } or an array of names)." or "Default must be a value (or index) from Values.")
 
-		local button = Widgets.Surface(cleanup, {
+		local button, buttonStroke = Widgets.Surface(cleanup, {
 			Class = "TextButton",
 			Name = "Select",
 			Parent = self.Right,
 			Fill = "TertiaryBackground",
-			Stroke = "Border",
-			Radius = 5,
+			Transparency = "ElementTransparency",
+			Stroke = "Text",
+			Radius = 12,
 			Size = UDim2.fromScale(1, 1),
 		})
+		buttonStroke.Transparency = 0.8
 		self._button = button
 		local label = Widgets.Text(cleanup, {
 			Parent = button,

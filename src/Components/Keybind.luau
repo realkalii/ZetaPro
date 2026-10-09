@@ -46,8 +46,6 @@ return function(import)
 		return parse(value)
 	end
 
-	-- Callback = fired when the bound key is pressed.
-	-- ChangedCallback / OnChanged = fired when the binding is changed.
 	function Keybind:_Emit(value)
 		if self._destroyed then
 			return
@@ -73,15 +71,17 @@ return function(import)
 		self.Clicked = Signal.new()
 		cleanup:Add(self.Clicked)
 
-		local button = Widgets.Surface(cleanup, {
+		local button, buttonStroke = Widgets.Surface(cleanup, {
 			Class = "TextButton",
 			Name = "Key",
 			Parent = self.Right,
 			Fill = "TertiaryBackground",
-			Stroke = "Border",
-			Radius = 5,
+			Transparency = "ElementTransparency",
+			Stroke = "Text",
+			Radius = 12,
 			Size = UDim2.fromScale(1, 1),
 		})
+		buttonStroke.Transparency = 0.8
 		local label = Widgets.Text(cleanup, {
 			Parent = button,
 			Size = UDim2.fromScale(1, 1),

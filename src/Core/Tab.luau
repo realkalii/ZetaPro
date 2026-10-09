@@ -30,7 +30,7 @@ return function(import)
 			Parent = window._tabList,
 			Fill = "SecondaryBackground",
 			BackgroundTransparency = 1,
-			Radius = 6,
+			Radius = 10,
 			Size = UDim2.new(1, 0, 0, 34),
 			LayoutOrder = #window.Tabs + 1,
 		})

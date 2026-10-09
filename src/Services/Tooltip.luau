@@ -23,7 +23,7 @@ return function(import)
 			Parent = gui,
 			Fill = "TertiaryBackground",
 			Stroke = "Border",
-			Radius = 5,
+			Radius = 8,
 			AutomaticSize = Enum.AutomaticSize.XY,
 			Size = UDim2.new(),
 			GroupTransparency = 1,

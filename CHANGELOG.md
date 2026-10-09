@@ -1,69 +1,88 @@
+# Changelogs
 
-# Changelog
+## ZETA Pro v1.0.2
 
-## ZetaPro v1.0.1 - First Stable Release
+> «UI refresh and floating restore button rework.»
 
-««The first stable release of ZetaPro, with improvements to the icon system, components, fixes and documentation.»»
+### Added
 
-### Icons
+- Redesigned floating restore button with new animations.
+- Refreshed UI with rounded corners and improved spacing.
+- Updated component styling and transparency.
+- Improved mobile responsiveness.
+- Added Pure Red theme.
+- Added limited-time Halloween 2026 theme.
 
-- Reworked the built-in icon system
-- Expanded the available icon catalog with a larger selection of icons
+### Removed
 
-### Fixes
+- Solar, Geist, Craft, and SF Symbols icon families.
+- Legacy window minimize/restore methods.
+- "RestoreButton" configuration option.
+- External icon family prefixes.
 
-- Fixed invalid icon definitions causing the icon module to fail
-- Fixed icons displaying incorrect or generic assets
-- Removed invalid icon names and aliases
-- Fixed icon lookup issues across components
-- Fixed random outlined squares appearing after opening dropdowns and color pickers
-- Popup frames are now properly cleaned up when they close
-- Fixed various UI and component issues found during testing
+### Fixed
 
-### Components
-
-- Improved existing UI components and their icon integration
-- Improved dropdowns and colorpickers
-- Improved notifications and dialogs
-- Improved general component behavior and consistency
-
-### Docs rework
-
-- Updated the documentation with improved Quick Start content
-- Added a Keybinds page covering callbacks, rebinding, runtime changes, disabling, removing and supported keys
-- Completely reworked the documentation site
+- Remote icon fallback.
+- UI spacing and styling inconsistencies.
+- Theme registration and loading.
+- Outdated documentation and examples.
 
 ---
 
-## ZetaPro v1.0.0 - Early Beta Test
+## ZETA Pro v1.0.1 — Early Beta
 
-*Test version only*
+> «Icon system overhaul, bug fixes, and documentation improvements.»
 
-- Window system with drag, resize, minimize/restore and responsive layout
-- Acrylic with fallback support
-- Tabs
-- Sections
-- Buttons
-- Toggles
-- Sliders
-- Dropdowns
-- MultiDropdown
-- Inputs
-- Keybinds
-- Colorpickers
-- Paragraphs
-- Labels
-- Dividers
-- Dialogs
-- Tooltips
-- Notifications
-- Themes with Dark, Light, Midnight, Zeta and custom themes
-- Runtime theme switching
-- Built-in icons
-- Image and URL icons
-- Custom icon providers
-- Search
-- Config system with state, export/import and optional persistence
-- Capability detection
-- Component registry for custom components
-- docs site
+### Added
+
+- Support for Lucide, Solar, Geist, Craft, and SF Symbols icon families.
+- Icon family prefixes using the "family:name" format.
+- Solar icon variants.
+- Background icon downloads and local caching.
+- Spritesheet and layered icon support.
+- Expanded icon catalog with approximately 180 icons and 220 aliases.
+- Additional icons for script hub categories.
+- New Keybinds documentation.
+- Quick Start, FAQ, Discord link, and temporary Try ZetaPro playground.
+
+### Fixed
+
+- Icon module loading errors.
+- Invalid icon names and aliases.
+- Incorrect family icon rendering.
+- Solar variant resolution.
+- Reserved Lua keyword conflicts.
+- Incorrect "crop" icon alias.
+- Outlined squares appearing in dropdowns and color pickers.
+- Popup cleanup.
+
+### Updated
+
+- Icons documentation and examples.
+- Custom icon provider documentation.
+- Image, URL, and hot-swap icon documentation.
+
+---
+
+## ZETA Pro v1.0.0
+
+> «Initial public release.»
+
+### Added
+
+- Window system with dragging, resizing, and minimization.
+- Responsive layout and acrylic effects.
+- Tabs and sections.
+- Buttons, toggles, sliders, and dropdowns.
+- MultiDropdowns and text inputs.
+- Keybinds and color pickers.
+- Paragraphs, labels, and dividers.
+- Dialogs, tooltips, and notifications.
+- Dark, Light, Midnight, and Zeta themes.
+- Custom themes and runtime theme switching.
+- Built-in icons and custom icon providers.
+- Image and URL icons.
+- Global search.
+- Configuration system with export, import, and persistence.
+- Capability detection.
+- Custom component registry.

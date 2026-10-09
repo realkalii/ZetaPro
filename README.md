@@ -12,7 +12,7 @@
 
 ### Stable
 
-The `main` branch contains the latest stable version of ZetaPro.
+The `main` branch contains the latest version of ZetaPro.
 
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
@@ -53,6 +53,5 @@ This keeps your script on that version until you manually change the tag.
 
 | Project | Contribution |
 | --- | --- |
-| [dawid-scripts/Fluent](https://github.com/dawid-scripts/Fluent) | UX, components and API inspiration |
-| [Footagesus/Icons](https://github.com/Footagesus/Icons) | Icon families |
+| [dawid-scripts/Fluent](https://github.com/dawid-scripts/Fluent) | UX, components and API inspiration | 
 | [Icons.rest](https://icons.rest) | Source for icons |
