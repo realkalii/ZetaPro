@@ -1,6 +1,6 @@
 # Themes
 
-Built in: `Dark`, `Light`, `Midnight`, `Zeta`, and `Revolt Pure Red`. `Halloween 2026` is a limited theme scheduled for removal after Halloween 2026.
+Built in: `Dark`, `Light`, `Midnight`, `Zeta`, and `Pure Red`. `Halloween 2026` is a limited theme scheduled for removal after Halloween 2026.
 
 ```lua
 Zeta:SetTheme("Midnight")
