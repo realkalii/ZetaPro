@@ -7,7 +7,7 @@ return function(import)
 		_current = "Builtin",
 	}
 
-		function Registry.Register(name, resolve)
+	function Registry.Register(name, resolve)
 		Utility.Check(type(name) == "string" and type(resolve) == "function", "IconProvider", name, "Expected (name: string, resolve: function).")
 		Registry._providers[name] = resolve
 	end
@@ -25,21 +25,14 @@ return function(import)
 		return Registry._current
 	end
 
-		function Registry.Resolve(spec)
-			if type(spec) == "string" then
-				local resolver = Registry._providers[Registry._current]
-				local ok, resolved = pcall(resolver, spec)
-				if ok and resolved then
-					return resolved
-				end
-				local family, name = string.match(spec, "^([%w_-]+):(.+)$")
-				if family and name and Providers.ResolveFamily then
-					resolved = Providers.ResolveFamily(family, name)
-					if resolved then
-						return resolved
-					end
-				end
-				return Providers.Builtin.Resolve(spec)
+	function Registry.Resolve(spec)
+		if type(spec) == "string" then
+			local resolver = Registry._providers[Registry._current]
+			local ok, resolved = pcall(resolver, spec)
+			if ok and resolved then
+				return resolved
+			end
+			return Providers.Builtin.Resolve(spec)
 		end
 		if type(spec) == "table" and (spec.Type == "Image" or spec.Type == "Url") then
 			return spec
