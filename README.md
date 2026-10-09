@@ -53,5 +53,5 @@ This keeps your script on that version until you manually change the tag.
 
 | Project | Contribution |
 | --- | --- |
-| [dawid-scripts/Fluent](https://github.com/dawid-scripts/Fluent) | UX, components and API inspiration |
+| [dawid-scripts/Fluent](https://github.com/dawid-scripts/Fluent) | UX, components and API inspiration | 
 | [Icons.rest](https://icons.rest) | Source for icons |
