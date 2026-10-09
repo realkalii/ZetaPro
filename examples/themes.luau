@@ -18,13 +18,13 @@ Zeta:RegisterTheme("MyRedLight", {
 	Text = Color3.fromRGB(255, 255, 255),
 })
 
-local Window = Zeta:CreateWindow({ Title = "Themes", SubTitle = "Hot swap", Theme = "Revolt Pure Red" })
+local Window = Zeta:CreateWindow({ Title = "Themes", SubTitle = "Hot swap", Theme = "Pure Red" })
 local Tab = Window:AddTab({ Title = "Themes", Icon = "settings" })
 
 Tab:AddDropdown("Theme", {
 	Title = "Theme",
 	Values = Zeta:GetThemes(),
-	Default = "Revolt Pure Red",
+	Default = "Pure Red",
 	Callback = function(name)
 		Zeta:SetTheme(name) -- every element updates without being rebuilt
 	end,
