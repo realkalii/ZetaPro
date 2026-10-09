@@ -12,7 +12,7 @@ local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/beta/s
 local MODULES = {
 	"Core/Signal", "Core/State", "Core/Capabilities", "Core/Utility", "Core/Config", "Core/Theme",
 	"Core/Widgets", "Core/Search", "Core/Component", "Core/Section", "Core/Tab", "Core/Window",
-	"Themes/Default", "Themes/Dark", "Themes/Light", "Themes/Midnight", "Themes/Zeta", "Themes/Crimson", "Themes/Halloween2026",
+	"Themes/Default", "Themes/Dark", "Themes/Light", "Themes/Midnight", "Themes/Zeta", "Themes/PureRed", "Themes/Halloween2026",
 	"Services/Cleanup", "Services/Animation", "Services/Input", "Services/Drag", "Services/Acrylic",
 	"Services/Tooltip", "Services/Notification",
 	"Icons/Icon", "Icons/Catalog", "Icons/Registry", "Icons/Providers",
@@ -125,7 +125,7 @@ local Input = import("Services/Input")
 local Tooltip = import("Services/Tooltip")
 local Notification = import("Services/Notification")
 
-for _, name in { "Dark", "Light", "Midnight", "Zeta", "Crimson" } do
+for _, name in { "Dark", "Light", "Midnight", "Zeta", "Pure Red" } do
 	Theme.Register(name, import("Themes/" .. name))
 end
 Theme.Register("Halloween 2026", import("Themes/Halloween2026"))
