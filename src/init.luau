@@ -3,7 +3,7 @@ local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/beta/s
 
 local MODULES = {
 	"Core/Signal", "Core/State", "Core/Capabilities", "Core/Utility", "Core/Config", "Core/Theme",
-	"Core/Design", "Core/Home", "Core/Widgets", "Core/Search", "Core/Component", "Core/Section", "Core/Tab", "Core/Window",
+	"Core/Design", "Core/Home", "Core/Widgets", "Core/Search", "Core/Component", "Core/Section", "Core/Tab", "Core/WindowSize", "Core/Window",
 	"Themes/Default", "Themes/Dark", "Themes/Light", "Themes/Midnight", "Themes/Zeta", "Themes/PureRed", "Themes/Halloween2026",
 	"Services/Cleanup", "Services/Animation", "Services/Input", "Services/Drag", "Services/Acrylic",
 	"Services/Tooltip", "Services/Notification",
