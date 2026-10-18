@@ -26,7 +26,6 @@ return function(import)
 		return false
 	end
 
-	-- Callback(color, transparency)
 	function Colorpicker:_Emit(value)
 		if self._destroyed then
 			return
@@ -72,7 +71,7 @@ return function(import)
 		local hasAlpha = config.Transparency ~= nil
 		Utility.Check(not hasAlpha or (type(config.Transparency) == "number" and config.Transparency >= 0 and config.Transparency <= 1), "Colorpicker", id, "Transparency must be a number between 0 and 1.")
 
-		local self = Component.New(ctx, Colorpicker, "Colorpicker", id, config, { RightWidth = 44, RightHeight = 22 })
+		local self = Component.New(ctx, Colorpicker, "Colorpicker", id, config, { RightWidth = 44, RightHeight = 28 })
 		local cleanup = self.Cleanup
 		self._default, self._hasAlpha, self._defaultAlpha = default, hasAlpha, config.Transparency or 0
 
@@ -115,9 +114,17 @@ return function(import)
 			if self._destroyed or not self.Enabled then
 				return
 			end
-			local popup = self.Window:OpenPopup(swatch, 232, hasAlpha and 292 or 272)
+			local fullHeight = hasAlpha and 292 or 272
+			local popupHeight = math.min(fullHeight, math.max(180, self.Window.Root.Size.Y.Offset - 16))
+			local popup = self.Window:OpenPopup(swatch, 232, popupHeight)
 			self._popup = popup
-			local pcl, frame = popup.Cleanup, popup.Frame
+			local pcl = popup.Cleanup
+			local frame = Utility.Create("ScrollingFrame", {
+				Name = "ColorpickerContent", BackgroundTransparency = 1,
+				Size = UDim2.fromScale(1, 1), CanvasSize = UDim2.fromOffset(0, fullHeight),
+				ScrollBarThickness = 3, ScrollingDirection = Enum.ScrollingDirection.Y,
+				Parent = popup.Frame,
+			})
 			pcl:Add(popup.Closed:Connect(function()
 				if self._popup == popup then
 					self._popup = nil
@@ -178,7 +185,6 @@ return function(import)
 				return bar, hit, cursor
 			end
 
-			-- Saturation / value square
 			svBase = Widgets.Surface(pcl, {
 				Parent = frame,
 				BackgroundTransparency = 0,
@@ -206,7 +212,6 @@ return function(import)
 				apply()
 			end)
 
-			-- Hue bar
 			local hueBar, hueHit
 			hueBar, hueHit, hueCursor = gradientBar(130)
 			Utility.Create("UIGradient", { Color = ColorSequence.new(HUES), Parent = hueBar })

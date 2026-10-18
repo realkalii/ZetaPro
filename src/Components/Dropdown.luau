@@ -80,7 +80,7 @@ return function(import)
 		local button = self._button
 		local count = #self.Values
 		local width = math.max(160, button.AbsoluteSize.X / Theme.Scale)
-		local popup = self.Window:OpenPopup(button, width, math.max(36, math.min(count * 28 + 8, 208)))
+		local popup = self.Window:OpenPopup(button, width, math.max(36, math.min(count * 32 + 8, 216)))
 		self._popup = popup
 		local cleanup = popup.Cleanup
 		cleanup:Add(popup.Closed:Connect(function()
@@ -111,7 +111,7 @@ return function(import)
 				Fill = "SecondaryBackground",
 				Transparency = 1,
 				Radius = 10,
-				Size = UDim2.new(1, 0, 0, 26),
+				Size = UDim2.new(1, 0, 0, 30),
 				LayoutOrder = index,
 			})
 			Widgets.Text(cleanup, {
@@ -165,7 +165,7 @@ return function(import)
 			Utility.Check(type(name) == "string", "Dropdown", id, "Values must be strings.")
 		end
 		local multi = config.Multi == true
-		local self = Component.New(ctx, Dropdown, multi and "MultiDropdown" or "Dropdown", id, config, { RightWidth = 160, RightHeight = 26 })
+		local self = Component.New(ctx, Dropdown, multi and "MultiDropdown" or "Dropdown", id, config, { RightWidth = 160, RightHeight = 30 })
 		self.Values, self.Multi = table.clone(values), multi
 		local cleanup = self.Cleanup
 
@@ -179,7 +179,7 @@ return function(import)
 			Fill = "TertiaryBackground",
 			Transparency = "ElementTransparency",
 			Stroke = "Text",
-			Radius = 12,
+			Radius = 10,
 			Size = UDim2.fromScale(1, 1),
 		})
 		buttonStroke.Transparency = 0.8

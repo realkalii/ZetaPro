@@ -65,7 +65,7 @@ return function(import)
 	return function(ctx, id, config)
 		local valid, default = parse(config.Default)
 		Utility.Check(valid, "Keybind", id, "Default must be an Enum.KeyCode, a mouse UserInputType or a key name.")
-		local self = Component.New(ctx, Keybind, "Keybind", id, config, { RightWidth = 110, RightHeight = 26 })
+		local self = Component.New(ctx, Keybind, "Keybind", id, config, { RightWidth = 110, RightHeight = 30 })
 		local cleanup = self.Cleanup
 		self._default = default
 		self.Clicked = Signal.new()
@@ -78,7 +78,7 @@ return function(import)
 			Fill = "TertiaryBackground",
 			Transparency = "ElementTransparency",
 			Stroke = "Text",
-			Radius = 12,
+			Radius = 10,
 			Size = UDim2.fromScale(1, 1),
 		})
 		buttonStroke.Transparency = 0.8

@@ -7,7 +7,6 @@ return function(import)
 	local Dialog = {}
 	Dialog.__index = Dialog
 
-	-- Window:CreateDialog({ Title, Content, Buttons = { { Title, Callback, Primary } } })
 	function Dialog.new(window, config)
 		Utility.Check(type(config) == "table" and type(config.Title) == "string", "Dialog", config and config.Title, "Title must be a string.")
 		local self = setmetatable({}, Dialog)
@@ -36,10 +35,10 @@ return function(import)
 			Parent = overlay,
 			Fill = "SecondaryBackground",
 			Stroke = "Border",
-			Radius = 20,
+			Radius = 16,
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.fromScale(0.5, 0.5),
-			Size = UDim2.new(0, 320, 0, 0),
+			Size = UDim2.new(0, math.min(320, window.Root.Size.X.Offset - 24), 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			GroupTransparency = 1,
 		})
@@ -106,7 +105,7 @@ return function(import)
 			Parent = self._buttons,
 			Fill = primary and "Accent" or "TertiaryBackground",
 			Stroke = strokeToken,
-			Radius = 14,
+			Radius = 10,
 			Size = UDim2.new(0, 0, 1, 0),
 			AutomaticSize = Enum.AutomaticSize.X,
 			LayoutOrder = self._count,

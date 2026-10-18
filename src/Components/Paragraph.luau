@@ -8,7 +8,6 @@ return function(import)
 		self:SetDescription(text)
 	end
 
-	-- config: Title, Content, Icon, RichText
 	return function(ctx, id, config)
 		return Component.New(ctx, Paragraph, "Paragraph", id, config, {})
 	end

@@ -1,4 +1,5 @@
 return function(import)
+	local TweenService = game:GetService("TweenService")
 	local Utility = import("Core/Utility")
 	local Signal = import("Core/Signal")
 	local Widgets = import("Core/Widgets")
@@ -8,6 +9,14 @@ return function(import)
 	local Cleanup = import("Services/Cleanup")
 
 	local Toast = {}
+
+	local function tint(kind)
+		local name = Theme.GetName()
+		if name == "Dark" or name == "Light" then
+			return Theme.Get(kind.Token)
+		end
+		return Theme.Get("Accent") or Theme.Get(kind.Token)
+	end
 	Toast.__index = Toast
 
 	local TYPES = {
@@ -23,6 +32,7 @@ return function(import)
 		local self = setmetatable({}, Toast)
 		self.Cleanup = Cleanup.new()
 		self.Closed = Signal.new()
+		self.Cleanup:Add(self.Closed)
 		self._closed = false
 		local cleanup = self.Cleanup
 
@@ -40,14 +50,18 @@ return function(import)
 			Class = "CanvasGroup",
 			Parent = wrapper,
 			Fill = "SecondaryBackground",
-			BackgroundTransparency = 0.45,
-			Radius = 20,
+			Transparency = "ComponentTransparency",
+			Stroke = "Border",
+			Radius = 14,
 			Size = UDim2.new(1, 0, 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			Position = UDim2.fromOffset(40, 0),
 			GroupTransparency = 1,
 		})
 		self.Frame = card
+		Theme.BindFn(function()
+			card.BackgroundTransparency = Theme.GetName() == "Light" and 0.12 or 0.16
+		end, cleanup)
 		Widgets.List(card, 0)
 
 		local body = Utility.Create("Frame", {
@@ -58,15 +72,16 @@ return function(import)
 			LayoutOrder = 1,
 			Parent = card,
 		})
-		Widgets.Padding(body, 14)
+		Widgets.Padding(body, 11)
 
-		local icon = Icons.Create(body, config.Icon or kind.Icon, { Size = 22, Color = kind.Token, Cleanup = cleanup })
+		local icon = Icons.Create(body, config.Icon or kind.Icon, { Size = 22, Color = tint(kind), Cleanup = cleanup })
+		Theme.BindFn(function() icon:SetColor(tint(kind)) end, cleanup)
 		icon.Instance.Position = UDim2.fromOffset(0, 0)
 
 		local column = Utility.Create("Frame", {
 			BackgroundTransparency = 1,
 			Position = UDim2.fromOffset(34, 0),
-			Size = UDim2.new(1, -60, 0, 0),
+			Size = UDim2.new(1, -70, 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			Parent = body,
 		})
@@ -100,11 +115,11 @@ return function(import)
 				Name = "Close",
 				BackgroundTransparency = 1,
 				AnchorPoint = Vector2.new(1, 0),
-				Position = UDim2.new(1, 0, 0, 0),
-				Size = UDim2.fromOffset(18, 18),
+				Position = UDim2.new(1, 3, 0, -3),
+				Size = UDim2.fromOffset(30, 30),
 				Parent = body,
 			})
-			Icons.Create(close, "x", { Size = 12, Position = UDim2.fromOffset(3, 3), Cleanup = cleanup })
+			Icons.Create(close, "x", { Size = 14, Position = UDim2.fromOffset(8, 8), Cleanup = cleanup })
 			cleanup:Add(close.Activated:Connect(function()
 				self:Close()
 			end))
@@ -116,16 +131,19 @@ return function(import)
 		end
 		local timed = type(duration) == "number" and duration > 0 and duration < math.huge
 		if timed and config.Progress ~= false then
-			local track = Utility.Create("Frame", {
-				Name = "Progress",
-				BackgroundTransparency = 1,
-				Size = UDim2.new(1, 0, 0, 2),
+			local track = Widgets.Surface(cleanup, {
+				Name = "ProgressTrack", Fill = "TertiaryBackground", Radius = "Full",
+				Size = UDim2.new(1, 0, 0, 3),
 				LayoutOrder = 2,
 				Parent = card,
 			})
 			local bar = Utility.Create("Frame", { Size = UDim2.fromScale(1, 1), Parent = track })
-			Theme.Bind(bar, { BackgroundColor3 = kind.Token }, cleanup)
-			Animation:Play(bar, { Size = UDim2.fromScale(0, 1) }, { Duration = duration, Style = Enum.EasingStyle.Linear })
+			Utility.Create("UICorner", { CornerRadius = UDim.new(1, 0), Parent = bar })
+			Theme.BindFn(function() bar.BackgroundColor3 = tint(kind) end, cleanup)
+			local progressTween = TweenService:Create(bar, TweenInfo.new(duration, Enum.EasingStyle.Linear), { Size = UDim2.fromScale(0, 1) })
+			self._progressTween = progressTween
+			cleanup:Add(progressTween)
+			progressTween:Play()
 		end
 
 		Animation:Play(card, { GroupTransparency = 0, Position = UDim2.new() }, { Duration = 0.2 })
@@ -144,10 +162,12 @@ return function(import)
 			return
 		end
 		self._closed = true
+		if self._progressTween then self._progressTween:Cancel() end
 		self.Closed:Fire()
 		if self._onClosed then
 			self._onClosed(self)
 		end
+		Animation:CancelTree(self.Frame)
 		Animation:Play(self.Frame, { GroupTransparency = 1, Position = UDim2.fromOffset(40, 0) }, {
 			Duration = 0.15,
 			OnComplete = function()

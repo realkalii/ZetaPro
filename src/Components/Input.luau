@@ -32,7 +32,7 @@ return function(import)
 		Utility.Check(config.Default == nil or type(config.Default) == "string", "Input", id, "Default must be a string.")
 		Utility.Check(config.MaxLength == nil or type(config.MaxLength) == "number", "Input", id, "MaxLength must be a number.")
 		Utility.Check(config.Validate == nil or type(config.Validate) == "function", "Input", id, "Validate must be a function.")
-		local self = Component.New(ctx, TextInput, "Input", id, config, { RightWidth = 190, RightHeight = 26 })
+		local self = Component.New(ctx, TextInput, "Input", id, config, { RightWidth = 190, RightHeight = 30 })
 		local cleanup = self.Cleanup
 
 		local holder, stroke = Widgets.Surface(cleanup, {
@@ -40,7 +40,7 @@ return function(import)
 			Fill = "TertiaryBackground",
 			Transparency = "ElementTransparency",
 			Stroke = "Text",
-			Radius = 12,
+			Radius = 10,
 			Size = UDim2.fromScale(1, 1),
 		})
 		stroke.Transparency = 0.8
@@ -71,6 +71,11 @@ return function(import)
 		local function strokeGoal()
 			return { Color = Theme.Get(focused and "Accent" or "Text"), Transparency = focused and 0.3 or 0.8 }
 		end
+		Theme.BindFn(function()
+			local goal = strokeGoal()
+			stroke.Color = goal.Color
+			stroke.Transparency = goal.Transparency
+		end, cleanup)
 		local function validate(text)
 			if config.MaxLength and #text > config.MaxLength then
 				return false

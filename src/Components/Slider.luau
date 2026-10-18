@@ -33,7 +33,7 @@ return function(import)
 		Utility.Check(type(default) == "number", "Slider", id, "Default must be a number.")
 		Utility.Check(config.Increment == nil or (type(config.Increment) == "number" and config.Increment > 0), "Slider", id, "Increment must be a positive number.")
 
-		local self = Component.New(ctx, Slider, "Slider", id, config, { RightWidth = 210, RightHeight = 24 })
+		local self = Component.New(ctx, Slider, "Slider", id, config, { RightWidth = 210, RightHeight = 28 })
 		self._min, self._max, self._increment = min, max, config.Increment
 		self._rounding = math.clamp(config.Rounding or ((config.Increment and config.Increment % 1 ~= 0) and 2 or 0), 0, 6)
 		local cleanup = self.Cleanup
@@ -52,7 +52,7 @@ return function(import)
 			Radius = "Full",
 			AnchorPoint = Vector2.new(0, 0.5),
 			Position = UDim2.new(0, 6, 0.5, 0),
-			Size = UDim2.new(1, -12, 0, 4),
+			Size = UDim2.new(1, -12, 0, 5),
 		})
 		local fill = Widgets.Surface(cleanup, {
 			Parent = track,
@@ -67,7 +67,7 @@ return function(import)
 			Radius = "Full",
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.fromScale(0, 0.5),
-			Size = UDim2.fromOffset(12, 12),
+			Size = UDim2.fromOffset(14, 14),
 		})
 		local boxFrame, boxStroke = Widgets.Surface(cleanup, {
 			Parent = self.Right,
@@ -77,7 +77,7 @@ return function(import)
 			Radius = 12,
 			AnchorPoint = Vector2.new(1, 0.5),
 			Position = UDim2.new(1, 0, 0.5, 0),
-			Size = UDim2.fromOffset(48, 22),
+			Size = UDim2.fromOffset(48, 26),
 		})
 		boxStroke.Transparency = 0.8
 		local box = Widgets.Text(cleanup, {

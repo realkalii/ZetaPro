@@ -8,7 +8,6 @@ return function(import)
 		self:SetTitle(text)
 	end
 
-	-- config: Text (or Title), Icon
 	return function(ctx, id, config)
 		return Component.New(ctx, Label, "Label", id, config, { Flat = true, MinHeight = 24 })
 	end
