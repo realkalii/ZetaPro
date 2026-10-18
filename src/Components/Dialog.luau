@@ -34,6 +34,7 @@ return function(import)
 			Name = "Dialog",
 			Parent = overlay,
 			Fill = "SecondaryBackground",
+			Transparency = "ComponentTransparency",
 			Stroke = "Border",
 			Radius = 16,
 			AnchorPoint = Vector2.new(0.5, 0.5),

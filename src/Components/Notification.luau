@@ -60,7 +60,7 @@ return function(import)
 		})
 		self.Frame = card
 		Theme.BindFn(function()
-			card.BackgroundTransparency = Theme.GetName() == "Light" and 0.12 or 0.16
+			card.BackgroundTransparency = math.clamp((Theme.Get("ComponentTransparency") or 0.4) * 0.75, 0.18, 0.45)
 		end, cleanup)
 		Widgets.List(card, 0)
 

@@ -2,6 +2,7 @@ return function(import)
 	local Component = import("Core/Component")
 	local Utility = import("Core/Utility")
 	local Widgets = import("Core/Widgets")
+	local Icons = import("Icons/Icon")
 
 	local Button = setmetatable({}, { __index = Component.Base })
 	Button.__index = Button
@@ -15,7 +16,7 @@ return function(import)
 	end
 
 	function Button:SetButtonText(value)
-		if self._actionLabel then self._actionLabel.Text = tostring(value) end
+		self.Config.ButtonText = tostring(value)
 	end
 
 	function Button:SetCallback(callback)
@@ -25,16 +26,10 @@ return function(import)
 
 	return function(ctx, id, config)
 		Utility.Check(config.Callback == nil or type(config.Callback) == "function", "Button", config.Title, "Callback must be a function.")
-		local self = Component.New(ctx, Button, "Button", id, config, { RightWidth = 82, RightHeight = 30 })
+		local self = Component.New(ctx, Button, "Button", id, config, { RightWidth = 18, RightHeight = 18 })
 		local cleanup = self.Cleanup
-		local action = Widgets.Surface(cleanup, {
-			Name = "Action", Parent = self.Right, Fill = "TertiaryBackground",
-			Stroke = "Border", Radius = 10, Size = UDim2.fromScale(1, 1),
-		})
-		self._actionLabel = Widgets.Text(cleanup, {
-			Parent = action, Text = config.ButtonText or "Run", Bold = true,
-			TextSize = 12, TextXAlignment = Enum.TextXAlignment.Center,
-			Size = UDim2.fromScale(1, 1),
+		Icons.Create(self.Right, "chevron-right", {
+			Size = 14, Color = "MutedText", Position = UDim2.fromOffset(2, 2), Cleanup = cleanup,
 		})
 		local hit = Utility.Create("TextButton", {
 			Name = "Hit",
