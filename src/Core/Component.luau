@@ -8,6 +8,7 @@ return function(import)
 	local Icons = import("Icons/Icon")
 	local Tooltip = import("Services/Tooltip")
 	local Animation = import("Services/Animation")
+	local Design = import("Core/Design")
 
 	local Component = { Registry = {} }
 	local Base = {}
@@ -55,8 +56,8 @@ return function(import)
 			Fill = (not flat) and "SecondaryBackground" or nil,
 			Transparency = (not flat) and "ComponentTransparency" or nil,
 			Stroke = (not flat) and "Text" or nil,
-			Radius = 16,
-			Size = UDim2.new(1, 0, 0, opts.MinHeight or 48),
+			Radius = Design.Radius.Card,
+			Size = UDim2.new(1, 0, 0, opts.MinHeight or 52),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			LayoutOrder = ctx.Order(),
 		})
@@ -76,13 +77,13 @@ return function(import)
 			Size = UDim2.new(1, rightWidth > 0 and -(rightWidth + 12) or 0, 0, 0),
 			Parent = frame,
 		})
-		Utility.Create("UIPadding", { PaddingRight = UDim.new(0, 14), PaddingLeft = UDim.new(0, 16), PaddingTop = UDim.new(0, 15), PaddingBottom = UDim.new(0, 15), Parent = left })
-		Widgets.List(left, 12, { FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center })
+		Utility.Create("UIPadding", { PaddingRight = UDim.new(0, 10), PaddingLeft = UDim.new(0, 12), PaddingTop = UDim.new(0, 11), PaddingBottom = UDim.new(0, 11), Parent = left })
+		Widgets.List(left, 9, { FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center })
 
 		self._iconHolder = Utility.Create("Frame", {
 			Name = "IconHolder",
 			BackgroundTransparency = 1,
-			Size = UDim2.fromOffset(16, 16),
+			Size = UDim2.fromOffset(18, 18),
 			LayoutOrder = 1,
 			Visible = false,
 			Parent = left,
@@ -129,19 +130,36 @@ return function(import)
 				Name = "Right",
 				BackgroundTransparency = 1,
 				AnchorPoint = Vector2.new(1, 0.5),
-				Position = UDim2.new(1, -12, 0.5, 0),
+				Position = UDim2.new(1, -10, 0.5, 0),
 				Size = UDim2.fromOffset(rightWidth, opts.RightHeight or 26),
 				Parent = frame,
 			})
 		end
 
-		self:SetIcon(config.Icon)
+		if rightWidth > 0 then
+			local function reflow()
+				local available = math.max(0, frame.AbsoluteSize.X)
+				local effective = math.min(rightWidth, math.max(72, math.floor(available * 0.52)))
+				self.Right.Size = UDim2.fromOffset(effective, opts.RightHeight or 26)
+				left.Size = UDim2.new(1, -(effective + 12), 0, 0)
+			end
+			cleanup:Add(frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(reflow))
+			reflow()
+		end
+
+		local defaultIcons = {
+			Button = "mouse-pointer-click", Toggle = "toggle-right", Slider = "sliders-horizontal",
+			Dropdown = "list", MultiDropdown = "list", Input = "pencil", Keybind = "keyboard",
+			Colorpicker = "palette", Paragraph = "align-left", Label = "type",
+		}
+		self:SetIcon(config.Icon or defaultIcons[kind])
 
 		if not opts.NoSearch and (title ~= "" or description ~= "") then
 			self._entry = ctx.Window:_IndexAdd({
 				Kind = kind,
 				Title = title,
 				Description = description,
+				SearchKeywords = config.SearchKeywords,
 				Tab = ctx.Tab,
 				Section = ctx.Section,
 				Frame = frame,
@@ -266,6 +284,7 @@ return function(import)
 		if self.Frame then
 			self.Frame.Visible = visible
 		end
+		if self.Window and self.Window._search then self.Window._search.Changed:Fire() end
 	end
 
 	function Base:SetEnabled(enabled)

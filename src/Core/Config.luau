@@ -5,8 +5,6 @@ return function(import)
 	local Utility = import("Core/Utility")
 	local Capabilities = import("Core/Capabilities")
 
-	-- Application state. UI components bind to these states by id, so values
-	-- survive UI destruction and can be exported/imported independently.
 	local Config = {
 		Folder = "ZetaPro/configs",
 		Changed = Signal.new(),

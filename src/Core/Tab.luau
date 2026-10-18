@@ -6,6 +6,8 @@ return function(import)
 	local Section = import("Core/Section")
 	local Animation = import("Services/Animation")
 	local Icons = import("Icons/Icon")
+	local Tooltip = import("Services/Tooltip")
+	local Design = import("Core/Design")
 
 	local Tab = {}
 	Component.MakeContainer(Tab)
@@ -30,8 +32,8 @@ return function(import)
 			Parent = window._tabList,
 			Fill = "SecondaryBackground",
 			BackgroundTransparency = 1,
-			Radius = 10,
-			Size = UDim2.new(1, 0, 0, 34),
+			Radius = Design.Radius.Control,
+			Size = UDim2.new(1, 0, 0, 42),
 			LayoutOrder = #window.Tabs + 1,
 		})
 		cleanup:Add(button)
@@ -45,7 +47,8 @@ return function(import)
 			Position = UDim2.new(0, 2, 0.5, 0),
 			Size = UDim2.fromOffset(3, 0),
 		})
-		self._icon = Icons.Create(button, config.Icon, { Size = 16, Cleanup = cleanup })
+		self._icon = Icons.Create(button, config.Icon or "layout-grid", { Size = 19, Cleanup = cleanup })
+		self._tooltip = Tooltip.Attach(button, config.Title, cleanup)
 		self._title = Widgets.Text(cleanup, {
 			Parent = button,
 			Text = config.Title,
@@ -168,6 +171,7 @@ return function(import)
 	function Tab:SetTitle(text)
 		self.Title = text
 		self._title.Text = text
+		self._tooltip.Text = text
 		self._entry.Title = text
 	end
 
@@ -176,11 +180,12 @@ return function(import)
 		self:_Layout()
 	end
 
-	function Tab:AddSection(title)
-		return Section.new(self, title)
+	function Tab:AddSection(title, options)
+		return Section.new(self, title, options)
 	end
 
 	function Tab:Destroy()
+		if self.IsHome then return end
 		local window = self.Window
 		local index = table.find(window.Tabs, self)
 		if index then

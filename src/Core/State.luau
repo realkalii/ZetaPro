@@ -12,7 +12,6 @@ return function(import)
 		return self._value
 	end
 
-	-- Tables always notify (they are treated as new values).
 	function State:Set(value, silent)
 		if self._value == value and type(value) ~= "table" then
 			return

@@ -73,7 +73,6 @@ return function(import)
 		return value
 	end
 
-	-- Runs `callback` now and after every theme/font change.
 	function Theme.BindFn(callback, cleanup)
 		callback()
 		local connection = Theme.Changed:Connect(callback)
@@ -83,7 +82,6 @@ return function(import)
 		return connection
 	end
 
-	-- map: { Property = "Token" | function(Theme) -> value }
 	function Theme.Bind(instance, map, cleanup)
 		return Theme.BindFn(function()
 			for property, token in map do
