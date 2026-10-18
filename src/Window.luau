@@ -43,7 +43,7 @@ return function(import)
 
 		local gui = cleanup:Add(Utility.NewScreenGui("ZetaPro_Window", 100))
 		self.Gui = gui
-		local size = config.Size or UDim2.fromOffset(520, 380)
+		local size = config.Size or UDim2.fromOffset(650, 455)
 
 		local root = Widgets.Surface(cleanup, {
 			Class = "CanvasGroup",

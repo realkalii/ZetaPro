@@ -1,9 +1,9 @@
-local VERSION = "1.0.2"
+local VERSION = "1.0.3"
 local DEFAULT_BASE = "https://raw.githubusercontent.com/realkalii/ZetaPro/beta/src/"
 
 local MODULES = {
 	"Core/Signal", "Core/State", "Core/Capabilities", "Core/Utility", "Core/Config", "Core/Theme",
-	"Core/Widgets", "Core/Search", "Core/Component", "Core/Section", "Core/Tab", "Core/Window",
+	"Core/Design", "Core/Home", "Core/Widgets", "Core/Search", "Core/Component", "Core/Section", "Core/Tab", "Core/Window",
 	"Themes/Default", "Themes/Dark", "Themes/Light", "Themes/Midnight", "Themes/Zeta", "Themes/PureRed", "Themes/Halloween2026",
 	"Services/Cleanup", "Services/Animation", "Services/Input", "Services/Drag", "Services/Acrylic",
 	"Services/Tooltip", "Services/Notification",
@@ -116,7 +116,6 @@ local IconRegistry = import("Icons/Registry")
 local Input = import("Services/Input")
 local Tooltip = import("Services/Tooltip")
 local Notification = import("Services/Notification")
-
 
 for _, name in { "Dark", "Light", "Midnight", "Zeta" } do
     Theme.Register(name, import("Themes/" .. name))
