@@ -13,11 +13,13 @@ return function(import)
 	local Acrylic = import("Services/Acrylic")
 	local Icons = import("Icons/Icon")
 	local Dialog = import("Components/Dialog")
+	local Design = import("Core/Design")
+	local Home = import("Core/Home")
 
 	local Window = {}
 	Window.__index = Window
 
-	local TOPBAR = 44
+	local TOPBAR = Design.Topbar
 
 	function Window.new(config)
 		Utility.Check(type(config) == "table", "Window", "?", "Config must be a table.")
@@ -26,9 +28,10 @@ return function(import)
 		self.Options, self.Tabs = {}, {}
 		self._search = Search.new()
 		self.Cleanup = Cleanup.new()
+		self.Cleanup:Add(self._search.Changed)
 		self.OnDestroy = Signal.new()
 		self.MinimizedChanged = Signal.new()
-		self.TabWidth = config.TabWidth or 148
+		self.TabWidth = config.TabWidth or Design.Sidebar
 		self.MinSize = config.MinSize or Vector2.new(380, 280)
 		self.MaxSize = config.MaxSize or Vector2.new(1000, 800)
 		self.Acrylic = config.Acrylic ~= false
@@ -43,7 +46,7 @@ return function(import)
 
 		local gui = cleanup:Add(Utility.NewScreenGui("ZetaPro_Window", 100))
 		self.Gui = gui
-		local size = config.Size or UDim2.fromOffset(520, 380)
+		local size = config.Size or UDim2.fromOffset(650, 455)
 
 		local root = Widgets.Surface(cleanup, {
 			Class = "CanvasGroup",
@@ -51,7 +54,7 @@ return function(import)
 			Parent = gui,
 			Fill = "Background",
 			Stroke = "Border",
-			Radius = 20,
+			Radius = Design.Radius.Window,
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.fromOffset(size.X.Offset, size.Y.Offset),
@@ -92,6 +95,30 @@ return function(import)
 			FillDirection = Enum.FillDirection.Horizontal,
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		})
+		local brand = Utility.Create("Frame", {
+			Name = "ZetaLogo", BackgroundTransparency = 1,
+			Size = UDim2.fromOffset(23, 23), LayoutOrder = -2, Parent = titles,
+		})
+		local brandFallback = Widgets.Text(cleanup, {
+			Parent = brand, Text = "ZΞ", Bold = true, TextSize = 15,
+			TextXAlignment = Enum.TextXAlignment.Center, Size = UDim2.fromScale(1, 1),
+		})
+		local brandImage = Utility.Create("ImageLabel", {
+			Name = "OriginalLogo", BackgroundTransparency = 1,
+			Image = Design.Logo, ImageTransparency = 1, Size = UDim2.fromScale(1, 1), Parent = brand,
+		})
+		cleanup:Add(task.spawn(function()
+			local loaded = false
+			local ok = pcall(function()
+				game:GetService("ContentProvider"):PreloadAsync({ brandImage }, function(_, status)
+					if status == Enum.AssetFetchStatus.Success then loaded = true end
+				end)
+			end)
+			if ok and loaded and brandImage.Parent then
+				brandImage.ImageTransparency = 0
+				brandFallback.Visible = false
+			end
+		end))
 		if config.Icon then
 			local icon = Icons.Create(titles, config.Icon, { Size = 16, Color = "Text", Cleanup = cleanup })
 			icon.Instance.LayoutOrder = 0
@@ -99,7 +126,7 @@ return function(import)
 		self._titleLabel = Widgets.Text(cleanup, {
 			Name = "Title",
 			Parent = titles,
-			Text = config.Title or "ZETA Pro",
+			Text = config.Title or "ZetaPro",
 			Bold = true,
 			TextSize = 13,
 			AutomaticSize = Enum.AutomaticSize.X,
@@ -109,13 +136,13 @@ return function(import)
 		self._subtitleLabel = Widgets.Text(cleanup, {
 			Name = "Subtitle",
 			Parent = titles,
-			Text = config.SubTitle or "",
+			Text = config.SubTitle or "v1.0.3",
 			Color = "MutedText",
 			TextSize = 11,
 			AutomaticSize = Enum.AutomaticSize.X,
 			Size = UDim2.new(0, 0, 1, 0),
 			LayoutOrder = 2,
-			Visible = (config.SubTitle or "") ~= "",
+			Visible = (config.SubTitle or "v1.0.3") ~= "",
 		})
 
 		local controls = Utility.Create("Frame", {
@@ -140,10 +167,10 @@ return function(import)
 				Fill = "SecondaryBackground",
 				Transparency = "ElementTransparency",
 				Radius = "Full",
-				Size = UDim2.fromOffset(28, 28),
+				Size = UDim2.fromOffset(32, 32),
 				LayoutOrder = order,
 			})
-			Icons.Create(button, iconName, { Size = 13, Position = UDim2.fromOffset(7.5, 7.5), Cleanup = cleanup })
+			Icons.Create(button, iconName, { Size = 13, Position = UDim2.fromOffset(9.5, 9.5), Cleanup = cleanup })
 			Widgets.Interactive(cleanup, button, button, {})
 			cleanup:Add(button.Activated:Connect(callback))
 			return button
@@ -151,9 +178,9 @@ return function(import)
 		control("minus", 1, function()
 			self:Minimize()
 		end)
-		local controlsWidth = 28
-		if config.CloseButton == true then
-			controlsWidth = 60
+		local controlsWidth = 32
+		if config.CloseButton ~= false then
+			controlsWidth = 70
 			control("x", 2, function()
 				Utility.SafeCall("Window OnClose", config.OnClose)
 				self:Destroy()
@@ -169,10 +196,10 @@ return function(import)
 			Transparency = "ElementTransparency",
 			AnchorPoint = Vector2.new(1, 0.5),
 			Position = UDim2.new(1, -(controlsWidth + 20), 0.5, 0),
-			Size = UDim2.fromOffset(150, 28),
+			Size = UDim2.fromOffset(170, 32),
 		})
 		self._searchBox = searchBox
-		Icons.Create(searchBox, "search", { Size = 13, Position = UDim2.fromOffset(10, 7.5), Cleanup = cleanup })
+		Icons.Create(searchBox, "search", { Size = 15, Position = UDim2.fromOffset(10, 8.5), Cleanup = cleanup })
 		local searchInput = Widgets.Text(cleanup, {
 			Class = "TextBox",
 			Name = "SearchInput",
@@ -211,8 +238,8 @@ return function(import)
 			ScrollingDirection = Enum.ScrollingDirection.Y,
 			Parent = sidebar,
 		})
-		Widgets.Padding(tabList, 6)
-		Widgets.List(tabList, 4)
+		Widgets.Padding(tabList, 5)
+		Widgets.List(tabList, 6)
 		self._tabList = tabList
 
 		self._pages = Utility.Create("Frame", {
@@ -255,6 +282,7 @@ return function(import)
 			ScrollingDirection = Enum.ScrollingDirection.Y,
 			Visible = false,
 		})
+		self._resultsFrame = results
 		Utility.Create("UISizeConstraint", { MaxSize = Vector2.new(300, 260), Parent = results })
 		Widgets.Padding(results, 4)
 		Widgets.List(results, 2)
@@ -326,6 +354,9 @@ return function(import)
 
 		cleanup:Add(searchInput:GetPropertyChangedSignal("Text"):Connect(function()
 			showResults(searchInput.Text)
+		end))
+		cleanup:Add(self._search.Changed:Connect(function()
+			if not self._destroyed and searchInput.Text ~= "" then showResults(searchInput.Text) end
 		end))
 		cleanup:Add(searchInput.Focused:Connect(function()
 			if searchInput.Text ~= "" then
@@ -468,6 +499,7 @@ return function(import)
 		self:SetMinimizeKey(config.MinimizeKey)
 		self:_Clamp()
 		self:_UpdateLayout()
+		self.Home = Home.Create(self, config)
 		Animation:Play(root, { GroupTransparency = 0 }, { Duration = 0.2 })
 		if self._blur then
 			self._blur.SetActive(true)
@@ -502,8 +534,8 @@ return function(import)
 			return
 		end
 		local width = self.Root.Size.X.Offset
-		local compact = width < 500
-		local sidebar = compact and 52 or self.TabWidth
+		local compact = true
+		local sidebar = width < 500 and Design.Sidebar or self.TabWidth
 		self._compact = compact
 		self._sidebar.Size = UDim2.new(0, sidebar, 1, -(TOPBAR + 1))
 		self._content.Position = UDim2.fromOffset(sidebar, TOPBAR + 1)
@@ -511,7 +543,15 @@ return function(import)
 		for _, tab in self.Tabs do
 			tab:_SetCompact(compact)
 		end
-		self._searchBox.Visible = self._searchEnabled and width >= 460
+		if self.Home then self.Home:_SetCompact(compact) end
+		self._searchBox.Visible = self._searchEnabled
+		self._titleLabel.Visible = width >= 390
+		self._subtitleLabel.Visible = self._subtitleLabel.Text ~= "" and width >= 560
+		self._titleLabel.AutomaticSize = Enum.AutomaticSize.None
+		self._titleLabel.TextTruncate = Enum.TextTruncate.AtEnd
+		self._titleLabel.Size = UDim2.fromOffset(math.clamp(width - (self._searchBox.Visible and 300 or 100), 60, 140), TOPBAR)
+		self._searchBox.Size = UDim2.fromOffset(math.clamp(width - 255, 120, 170), 32)
+		self._resultsFrame.Size = UDim2.fromOffset(math.min(300, width - 20), 0)
 	end
 
 	function Window:_IndexAdd(entry)
@@ -527,6 +567,9 @@ return function(import)
 			self:Restore()
 		end
 		self:SelectTab(tab)
+		if entry.Section and entry.Section.IsExpanded and not entry.Section:IsExpanded() then
+			entry.Section:Expand()
+		end
 		if entry.Kind == "Tab" then
 			return
 		end
@@ -572,11 +615,15 @@ return function(import)
 		if type(target) == "number" then
 			tab = self.Tabs[target]
 		elseif type(target) == "string" then
-			tab = nil
-			for _, candidate in self.Tabs do
-				if candidate.Title == target then
-					tab = candidate
-					break
+			if target == "Home" and self.Home then
+				tab = self.Home
+			else
+				tab = nil
+				for _, candidate in self.Tabs do
+					if candidate.Title == target then
+						tab = candidate
+						break
+					end
 				end
 			end
 		end
@@ -598,7 +645,7 @@ return function(import)
 	function Window:SetSubtitle(text)
 		text = text or ""
 		self._subtitleLabel.Text = text
-		self._subtitleLabel.Visible = text ~= ""
+		self:_UpdateLayout()
 	end
 
 	function Window:SetTheme(name)

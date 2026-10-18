@@ -3,7 +3,6 @@ return function(import)
 	local Utility = import("Core/Utility")
 	local Animation = import("Services/Animation")
 
-	-- Small themed building blocks shared by every component.
 	local Widgets = {}
 
 	local TEXT_KEYS = { Color = true, Bold = true, Class = true }
@@ -19,7 +18,6 @@ return function(import)
 		return out
 	end
 
-	-- props: Color (theme token), Bold, Class, plus any property of the class.
 	function Widgets.Text(cleanup, props)
 		props = props or {}
 		local class = props.Class or "TextLabel"
@@ -42,8 +40,6 @@ return function(import)
 		return label
 	end
 
-	-- props: Fill, Stroke (theme tokens), Radius (number | "Full"), Class,
-	-- Transparency (theme token | number, reactive BackgroundTransparency).
 	function Widgets.Surface(cleanup, props)
 		local raw = without(props, SURFACE_KEYS)
 		local fill, strokeToken, radius, transparency = props.Fill, props.Stroke, props.Radius, props.Transparency
@@ -82,8 +78,6 @@ return function(import)
 		return instance, stroke
 	end
 
-	-- Hover / pressed feedback. opts: Base, Hover, Pressed (tokens),
-	-- Alpha = { base, hover, pressed } background transparencies.
 	function Widgets.Interactive(cleanup, target, trigger, opts)
 		opts = opts or {}
 		local base = opts.Base or "SecondaryBackground"
