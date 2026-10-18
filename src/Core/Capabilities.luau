@@ -16,6 +16,14 @@ return function(import)
 
 	local Capabilities = {}
 
+	local executorName = lookup("identifyexecutor") or lookup("getexecutorname")
+	function Capabilities.GetExecutorName()
+		if not executorName then return "Unavailable" end
+		local ok, name = pcall(executorName)
+		if ok and type(name) == "string" and name ~= "" then return name end
+		return "Unavailable"
+	end
+
 	Capabilities.GetHui = lookup("gethui")
 	Capabilities.GetCustomAsset = lookup("getcustomasset") or lookup("getsynasset")
 
@@ -51,7 +59,8 @@ return function(import)
 		if not clipboard then
 			return false
 		end
-		return (pcall(clipboard, text))
+		local ok, result = pcall(clipboard, text)
+		return ok and result ~= false
 	end
 
 	function Capabilities.HttpGet(url)
