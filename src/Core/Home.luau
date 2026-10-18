@@ -4,6 +4,7 @@ return function(import)
 	local Utility = import("Core/Utility")
 	local Widgets = import("Core/Widgets")
 	local Theme = import("Core/Theme")
+	local Animation = import("Services/Animation")
 	local Icons = import("Icons/Icon")
 	local Capabilities = import("Core/Capabilities")
 	local Design = import("Core/Design")
@@ -115,33 +116,75 @@ return function(import)
 		if invite then
 			local discord = card(cleanup, page, "Discord", 58)
 			discord.LayoutOrder = 3
-			local badge = Widgets.Surface(cleanup, {
-				Name = "DiscordMark", Parent = discord, Radius = 8,
-				Size = UDim2.fromOffset(34, 34), Position = UDim2.fromOffset(10, 12),
+			Icons.Create(discord, "messages-square", {
+				Size = 27, Position = UDim2.fromOffset(13, 15),
+				Color = Color3.fromRGB(88, 101, 242), Cleanup = cleanup,
 			})
-			badge.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
-			local shape = Widgets.Surface(cleanup, {
-				Parent = badge, Radius = 7, Size = UDim2.fromOffset(22, 13),
-				Position = UDim2.fromOffset(6, 11),
-			})
-			shape.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			for _, x in { 6, 13 } do
-				local eye = Widgets.Surface(cleanup, { Parent = shape, Radius = "Full", Size = UDim2.fromOffset(3, 4), Position = UDim2.fromOffset(x, 4) })
-				eye.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
-			end
 			local title = text(cleanup, discord, "Discord", 9, 13, "Text", true)
 			title.Position = UDim2.fromOffset(52, 9)
-			title.Size = UDim2.new(1, -133, 0, 18)
+			title.Size = UDim2.new(1, -150, 0, 18)
 			local subtitle = text(cleanup, discord, "Community invite", 28, 11, "MutedText")
 			subtitle.Position = UDim2.fromOffset(52, 28)
-			subtitle.Size = UDim2.new(1, -133, 0, 16)
-			local copy = Widgets.Surface(cleanup, {
+			subtitle.Size = UDim2.new(1, -150, 0, 16)
+			local copy, copyStroke = Widgets.Surface(cleanup, {
 				Class = "TextButton", Name = "CopyInvite", Parent = discord,
-				Fill = "TertiaryBackground", Stroke = "Border", Radius = 9,
+				BackgroundColor3 = Color3.new(1, 1, 1),
+				Transparency = "ElementTransparency", Stroke = "Border", Radius = 10,
 				AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -9, 0.5, 0),
-				Size = UDim2.fromOffset(68, 32), Text = "Copy", TextSize = 12,
+				Size = UDim2.fromOffset(84, 30),
 			})
-			Theme.Bind(copy, { TextColor3 = "Text" }, cleanup)
+			local gradient = Utility.Create("UIGradient", { Rotation = 35, Parent = copy })
+			Icons.Create(copy, "copy", {
+				Size = 14, Position = UDim2.fromOffset(10, 8), Color = "Text", Cleanup = cleanup,
+			})
+			Widgets.Text(cleanup, {
+				Parent = copy, Text = "Copy", TextSize = 11, Bold = true,
+				Position = UDim2.fromOffset(31, 0), Size = UDim2.new(1, -35, 1, 0),
+			})
+			local hover, pressed = false, false
+			local function paint(instant)
+				local alpha = math.clamp((Theme.Get("ElementTransparency") or 0.26) - (pressed and 0.1 or hover and 0.05 or 0), 0.14, 0.55)
+				local borderAlpha = pressed and 0.25 or hover and 0.4 or 0.6
+				local offset = Vector2.new(pressed and 0.1 or hover and 0.05 or 0, 0)
+				if instant then
+					Animation:Cancel(copy)
+					Animation:Cancel(copyStroke)
+					Animation:Cancel(gradient)
+					copy.BackgroundTransparency = alpha
+					copyStroke.Transparency = borderAlpha
+					gradient.Offset = offset
+				else
+					Animation:Play(copy, { BackgroundTransparency = alpha }, { Duration = 0.15 })
+					Animation:Play(copyStroke, { Transparency = borderAlpha }, { Duration = 0.15 })
+					Animation:Play(gradient, { Offset = offset }, { Duration = 0.15 })
+				end
+			end
+			Theme.BindFn(function()
+				local base = Theme.Get("TertiaryBackground")
+				gradient.Color = ColorSequence.new(base, base:Lerp(Theme.Get("Accent"), 0.14))
+				paint(true)
+			end, cleanup)
+			cleanup:Add(copy.MouseEnter:Connect(function()
+				hover = true
+				paint(false)
+			end))
+			cleanup:Add(copy.MouseLeave:Connect(function()
+				hover, pressed = false, false
+				paint(false)
+			end))
+			cleanup:Add(copy.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					pressed = true
+					paint(false)
+				end
+			end))
+			cleanup:Add(copy.InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					pressed = false
+					if input.UserInputType == Enum.UserInputType.Touch then hover = false end
+					paint(false)
+				end
+			end))
 			cleanup:Add(copy.Activated:Connect(function()
 				local copied = Capabilities.SetClipboard(invite)
 				Notification.Notify({

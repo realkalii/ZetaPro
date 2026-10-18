@@ -35,7 +35,7 @@ return function(import)
 		self.TabWidth = config.TabWidth or Design.Sidebar
 		self.MinSize = config.MinSize or Vector2.new(560, 360)
 		self.MaxSize = config.MaxSize or Vector2.new(1000, 800)
-		self.Acrylic = config.Acrylic ~= false
+		self.Acrylic = true
 		self._searchEnabled = config.SearchEnabled ~= false
 		self._minimized, self._destroyed, self._compact = false, false, false
 		local cleanup = self.Cleanup
@@ -63,7 +63,7 @@ return function(import)
 		})
 		self.Root = root
 		Theme.BindFn(function()
-			root.BackgroundTransparency = self.Acrylic and Theme.Get("AcrylicTransparency") or 0
+			root.BackgroundTransparency = math.clamp(Theme.Get("AcrylicTransparency") or 0.38, 0.18, 0.65)
 		end, cleanup)
 		local uiScale = Instance.new("UIScale")
 		uiScale.Parent = root
@@ -92,21 +92,22 @@ return function(import)
 			AutomaticSize = Enum.AutomaticSize.X,
 			Parent = topbar,
 		})
-		Widgets.List(titles, 8, {
+		Widgets.List(titles, 10, {
 			FillDirection = Enum.FillDirection.Horizontal,
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		})
 		local brand = Utility.Create("Frame", {
 			Name = "ZetaLogo", BackgroundTransparency = 1,
-			Size = UDim2.fromOffset(23, 23), LayoutOrder = -2, Parent = titles,
+			Size = UDim2.fromOffset(32, 32), LayoutOrder = -2, Parent = titles,
 		})
 		local brandFallback = Widgets.Text(cleanup, {
-			Parent = brand, Text = "ZΞ", Bold = true, TextSize = 15,
+			Parent = brand, Text = "ZΞ", Bold = true, TextSize = 20,
 			TextXAlignment = Enum.TextXAlignment.Center, Size = UDim2.fromScale(1, 1),
 		})
 		local brandImage = Utility.Create("ImageLabel", {
 			Name = "OriginalLogo", BackgroundTransparency = 1,
-			Image = Design.Logo, ImageTransparency = 1, Size = UDim2.fromScale(1, 1), Parent = brand,
+			Image = Design.Logo, ImageTransparency = 1, ScaleType = Enum.ScaleType.Fit,
+			Size = UDim2.fromScale(1, 1), Parent = brand,
 		})
 		cleanup:Add(task.spawn(function()
 			local loaded = false
@@ -221,9 +222,8 @@ return function(import)
 		})
 		self._sidebar = sidebar
 		Theme.BindFn(function()
-			local color = Theme.Get("Sidebar")
-			sidebar.BackgroundTransparency = color and 0 or 1
-			if color then sidebar.BackgroundColor3 = color end
+			sidebar.BackgroundColor3 = Theme.Get("Sidebar") or Theme.Get("Background")
+			sidebar.BackgroundTransparency = math.clamp(Theme.Get("SidebarTransparency") or 0.46, 0.18, 0.65)
 		end, cleanup)
 		Widgets.Surface(cleanup, {
 			Name = "SidebarLine",
@@ -276,6 +276,7 @@ return function(import)
 			Name = "Results",
 			Parent = searchLayer,
 			Fill = "SecondaryBackground",
+			Transparency = "ComponentTransparency",
 			Stroke = "Border",
 			Radius = 14,
 			AnchorPoint = Vector2.new(1, 0),
@@ -472,7 +473,7 @@ return function(import)
 			self._control = { Frame = control, Scale = controlScale, Chevron = chevron.Instance }
 		end
 
-		if self.Acrylic and config.Blur ~= false and Acrylic.Supported() then
+		if Acrylic.Supported() then
 			self._blur = Acrylic.new(cleanup, 10)
 		end
 
@@ -678,10 +679,10 @@ return function(import)
 	end
 
 	function Window:SetAcrylic(enabled)
-		self.Acrylic = enabled == true
+		self.Acrylic = true
 		Theme.Changed:Fire(Theme.GetName())
 		if self._blur then
-			self._blur.SetActive(self.Acrylic and not self._minimized)
+			self._blur.SetActive(not self._minimized)
 		end
 	end
 
@@ -792,6 +793,7 @@ return function(import)
 			Name = "Popup",
 			Parent = layer,
 			Fill = "SecondaryBackground",
+			Transparency = "ComponentTransparency",
 			Stroke = "Border",
 			Radius = 14,
 			Size = UDim2.fromOffset(width, height),

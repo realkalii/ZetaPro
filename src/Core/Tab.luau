@@ -130,7 +130,7 @@ return function(import)
 		local zetaActive = Theme.Get("Active") ~= nil
 		local buttonGoal = {
 			BackgroundColor3 = Theme.Get(selected and "SecondaryBackground" or (Theme.Get("HoverSurface") and "HoverSurface" or "Hover")),
-			BackgroundTransparency = selected and 0 or (hover and 0.5 or 1),
+			BackgroundTransparency = selected and Theme.Get("ElementTransparency") or (hover and 0.5 or 1),
 		}
 		local textColor = Theme.Get(selected and (zetaActive and "Active" or "Text") or (hover and zetaActive and "Hover" or "MutedText"))
 		local indicatorGoal = { Size = UDim2.fromOffset(3, selected and 16 or 0) }
