@@ -80,7 +80,6 @@ return function(import)
 		end,
 	}
 
-	-- A built-in image shown if a remote PNG cannot be loaded.
 	Providers.Fallback = Providers.Builtin.Resolve("circle-help")
 
 	return Providers

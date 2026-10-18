@@ -15,7 +15,6 @@ return function(import)
 		return Providers.Builtin.Names()
 	end
 
-	-- Zeta.Icons.Home / Zeta.Icons.ChevronDown
 	setmetatable(Icons, {
 		__index = function(_, key)
 			if type(key) ~= "string" then
@@ -26,7 +25,6 @@ return function(import)
 		end,
 	})
 
-	-- opts: Size, Color (token or Color3), Position, AnchorPoint, Cleanup
 	function Icons.Create(parent, spec, opts)
 		opts = opts or {}
 		local size = opts.Size or 16
