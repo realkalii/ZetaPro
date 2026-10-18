@@ -116,10 +116,29 @@ return function(import)
 		if invite then
 			local discord = card(cleanup, page, "Discord", 58)
 			discord.LayoutOrder = 3
-			Icons.Create(discord, "messages-square", {
+			local discordFallback = Icons.Create(discord, "messages-square", {
 				Size = 27, Position = UDim2.fromOffset(13, 15),
 				Color = Color3.fromRGB(88, 101, 242), Cleanup = cleanup,
 			})
+			local discordImage = Utility.Create("ImageLabel", {
+				Name = "DiscordLogo", Parent = discord, BackgroundTransparency = 1,
+				Image = "rbxassetid://18505728250", ImageColor3 = Color3.new(1, 1, 1),
+				ImageTransparency = 1, ScaleType = Enum.ScaleType.Fit,
+				Size = UDim2.fromOffset(32, 32), Position = UDim2.fromOffset(10, 13),
+			})
+			local function updateDiscordImage()
+				if cleanup:IsCleaned() or not discordImage.Parent then return end
+				discordImage.ImageTransparency = discordImage.IsLoaded and 0 or 1
+				discordFallback.Instance.Visible = not discordImage.IsLoaded
+			end
+			cleanup:Add(discordImage:GetPropertyChangedSignal("IsLoaded"):Connect(updateDiscordImage))
+			updateDiscordImage()
+			cleanup:Add(task.spawn(function()
+				pcall(function()
+					game:GetService("ContentProvider"):PreloadAsync({ discordImage })
+				end)
+				updateDiscordImage()
+			end))
 			local title = text(cleanup, discord, "Discord", 9, 13, "Text", true)
 			title.Position = UDim2.fromOffset(52, 9)
 			title.Size = UDim2.new(1, -150, 0, 18)

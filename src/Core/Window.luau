@@ -46,6 +46,8 @@ return function(import)
 		Input.Init()
 
 		local gui = cleanup:Add(Utility.NewScreenGui("ZetaPro_Window", 100))
+		gui.IgnoreGuiInset = true
+		gui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
 		self.Gui = gui
 		local size = WindowSize.Load(config, self.MinSize, self.MaxSize) or config.Size or UDim2.fromOffset(650, 455)
 
@@ -92,13 +94,13 @@ return function(import)
 			AutomaticSize = Enum.AutomaticSize.X,
 			Parent = topbar,
 		})
-		Widgets.List(titles, 10, {
+		Widgets.List(titles, 8, {
 			FillDirection = Enum.FillDirection.Horizontal,
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		})
 		local brand = Utility.Create("Frame", {
 			Name = "ZetaLogo", BackgroundTransparency = 1,
-			Size = UDim2.fromOffset(32, 32), LayoutOrder = -2, Parent = titles,
+			Size = UDim2.fromOffset(40, 40), LayoutOrder = -2, Parent = titles,
 		})
 		local brandFallback = Widgets.Text(cleanup, {
 			Parent = brand, Text = "ZΞ", Bold = true, TextSize = 20,
@@ -221,10 +223,6 @@ return function(import)
 			Parent = root,
 		})
 		self._sidebar = sidebar
-		Theme.BindFn(function()
-			sidebar.BackgroundColor3 = Theme.Get("Sidebar") or Theme.Get("Background")
-			sidebar.BackgroundTransparency = math.clamp(Theme.Get("SidebarTransparency") or 0.46, 0.18, 0.65)
-		end, cleanup)
 		Widgets.Surface(cleanup, {
 			Name = "SidebarLine",
 			Parent = sidebar,
@@ -378,6 +376,24 @@ return function(import)
 			end)
 		end))
 
+		local function trackInteraction(handle)
+			cleanup:Add(handle.InputBegan:Connect(function(input)
+				if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then return end
+				self._interactions = (self._interactions or 0) + 1
+				local interaction = cleanup:Extend()
+				interaction:Add(input.Changed:Connect(function()
+					if input.UserInputState ~= Enum.UserInputState.End and input.UserInputState ~= Enum.UserInputState.Cancel then return end
+					interaction:Clean()
+					self._interactions = math.max(0, self._interactions - 1)
+					cleanup:Add(task.defer(function()
+						if not self._destroyed and self._interactions == 0 then
+							if self._pendingCenter then self:_Center() else self:_Clamp() end
+						end
+					end))
+				end))
+			end))
+		end
+		trackInteraction(topbar)
 		Drag.Attach(topbar, root, cleanup)
 		do
 			local grip = Utility.Create("TextButton", {
@@ -390,6 +406,7 @@ return function(import)
 				Parent = root,
 			})
 			Icons.Create(grip, "grip", { Size = 14, Position = UDim2.fromOffset(1, 1), Cleanup = cleanup })
+			trackInteraction(grip)
 			Drag.Resize(grip, root, cleanup, {
 				Min = self.MinSize,
 				Max = self.MaxSize,
@@ -486,7 +503,7 @@ return function(import)
 			local camera = workspace.CurrentCamera
 			if camera then
 				cameraConnection = camera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
-					self:_Clamp()
+					self:_Center()
 				end)
 			end
 		end
@@ -498,7 +515,10 @@ return function(import)
 		end)
 		cleanup:Add(workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
 			hookCamera()
-			self:_Clamp()
+			self:_Center()
+		end))
+		cleanup:Add(gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+			self:_Center()
 		end))
 		cleanup:Add(Theme.ScaleChanged:Connect(function()
 			self:_Clamp()
@@ -510,7 +530,7 @@ return function(import)
 		cleanup:Add(self.MinimizedChanged)
 
 		self:SetMinimizeKey(config.MinimizeKey)
-		self:_Clamp()
+		self:_Center()
 		self:_UpdateLayout()
 		self.Home = Home.Create(self, config)
 		Animation:Play(root, { GroupTransparency = 0 }, { Duration = 0.2 })
@@ -520,15 +540,30 @@ return function(import)
 		return self
 	end
 
-	function Window:_SizeBounds()
+	function Window:_ViewportSize()
+		local size = self.Gui.AbsoluteSize
+		if size.X > 0 and size.Y > 0 then return size end
 		local camera = workspace.CurrentCamera
-		local maxW, maxH = self.MaxSize.X, self.MaxSize.Y
-		if camera then
-			local viewport = camera.ViewportSize
-			local scale = Theme.Scale
-			maxW = math.max(1, math.min(maxW, viewport.X / scale - 24))
-			maxH = math.max(1, math.min(maxH, viewport.Y / scale - 24))
+		return camera and camera.ViewportSize or Vector2.new(1280, 720)
+	end
+
+	function Window:_Center()
+		if self._destroyed then return end
+		if (self._interactions or 0) > 0 then
+			self._pendingCenter = true
+			return
 		end
+		self._pendingCenter = false
+		self.Root.Position = UDim2.fromScale(0.5, 0.5)
+		self:_Clamp()
+	end
+
+	function Window:_SizeBounds()
+		local maxW, maxH = self.MaxSize.X, self.MaxSize.Y
+		local viewport = self:_ViewportSize()
+		local scale = Theme.Scale
+		maxW = math.max(1, math.min(maxW, (viewport.X - 24) / scale))
+		maxH = math.max(1, math.min(maxH, (viewport.Y - 24) / scale))
 		local minW = math.min(self.MinSize.X, maxW)
 		local minH = math.min(self.MinSize.Y, maxH)
 		return Vector2.new(minW, minH), Vector2.new(maxW, maxH)
@@ -544,6 +579,18 @@ return function(import)
 		local height = math.clamp(size.Y.Offset, minimum.Y, maximum.Y)
 		if width ~= size.X.Offset or height ~= size.Y.Offset then
 			self.Root.Size = UDim2.fromOffset(width, height)
+		end
+		local viewport = self:_ViewportSize()
+		local position = self.Root.Position
+		local halfWidth, halfHeight = width * Theme.Scale / 2, height * Theme.Scale / 2
+		local marginX = math.min(12, math.max(0, viewport.X / 2 - halfWidth))
+		local marginY = math.min(12, math.max(0, viewport.Y / 2 - halfHeight))
+		local x = position.X.Scale * viewport.X + position.X.Offset
+		local y = position.Y.Scale * viewport.Y + position.Y.Offset
+		local boundedX = math.clamp(x, halfWidth + marginX, math.max(halfWidth + marginX, viewport.X - halfWidth - marginX))
+		local boundedY = math.clamp(y, halfHeight + marginY, math.max(halfHeight + marginY, viewport.Y - halfHeight - marginY))
+		if boundedX ~= x or boundedY ~= y then
+			self.Root.Position = UDim2.new(position.X.Scale, boundedX - position.X.Scale * viewport.X, position.Y.Scale, boundedY - position.Y.Scale * viewport.Y)
 		end
 	end
 
