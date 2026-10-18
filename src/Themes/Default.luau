@@ -14,8 +14,9 @@ return {
 	Error = Color3.fromRGB(248, 113, 113),
 	Info = Color3.fromRGB(125, 168, 255),
 	Overlay = Color3.fromRGB(0, 0, 0),
-	AcrylicTransparency = 0.08,
-	ElementTransparency = 0.4,
-	ComponentTransparency = 0.78,
+	AcrylicTransparency = 0.38,
+	SidebarTransparency = 0.46,
+	ElementTransparency = 0.26,
+	ComponentTransparency = 0.42,
 	ComponentStrokeTransparency = 0.82,
 }

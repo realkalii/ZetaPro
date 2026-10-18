@@ -13,8 +13,9 @@ return {
 	Pressed = Color3.fromRGB(229, 229, 229),
 	HoverSurface = Color3.fromRGB(47, 48, 52),
 	PressedSurface = Color3.fromRGB(56, 57, 62),
-	ComponentTransparency = 0,
-	ElementTransparency = 0,
+	ComponentTransparency = 0.32,
+	ElementTransparency = 0.24,
+	SidebarTransparency = 0.46,
 	ComponentStrokeTransparency = 1,
-	AcrylicTransparency = 0,
+	AcrylicTransparency = 0.36,
 }
