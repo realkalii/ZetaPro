@@ -99,10 +99,14 @@ return function(import)
 			if not startSize or not startPointer then
 				return
 			end
+			local lower, upper = minSize, maxSize
+			if opts.GetBounds then
+				lower, upper = opts.GetBounds()
+			end
 			local scale = opts.GetScale and opts.GetScale() or 1
 			local delta = position - startPointer
-			local width = math.clamp(startSize.X.Offset + delta.X / scale, minSize.X, maxSize.X)
-			local height = math.clamp(startSize.Y.Offset + delta.Y / scale, minSize.Y, maxSize.Y)
+			local width = math.clamp(startSize.X.Offset + delta.X / scale, lower.X, upper.X)
+			local height = math.clamp(startSize.Y.Offset + delta.Y / scale, lower.Y, upper.Y)
 			local appliedX = (width - startSize.X.Offset) * scale
 			local appliedY = (height - startSize.Y.Offset) * scale
 			target.Size = UDim2.fromOffset(width, height)
@@ -114,6 +118,10 @@ return function(import)
 			)
 			if opts.OnResize then
 				opts.OnResize()
+			end
+		end, function()
+			if opts.OnEnd and startSize and target.Size ~= startSize then
+				opts.OnEnd(target.Size)
 			end
 		end)
 	end
