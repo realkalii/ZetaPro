@@ -22,7 +22,6 @@ return function(import)
 			Name = "Tooltip",
 			Parent = gui,
 			Fill = "TertiaryBackground",
-			Transparency = "ElementTransparency",
 			Stroke = "Border",
 			Radius = 8,
 			AutomaticSize = Enum.AutomaticSize.XY,
