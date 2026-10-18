@@ -127,12 +127,14 @@ return function(import)
 
 	function Tab:_Visual(instant)
 		local selected, hover = self.Selected, self._hover
+		local zetaActive = Theme.Get("Active") ~= nil
 		local buttonGoal = {
-			BackgroundColor3 = Theme.Get(selected and "SecondaryBackground" or "Hover"),
+			BackgroundColor3 = Theme.Get(selected and "SecondaryBackground" or (Theme.Get("HoverSurface") and "HoverSurface" or "Hover")),
 			BackgroundTransparency = selected and 0 or (hover and 0.5 or 1),
 		}
-		local textColor = Theme.Get(selected and "Text" or "MutedText")
+		local textColor = Theme.Get(selected and (zetaActive and "Active" or "Text") or (hover and zetaActive and "Hover" or "MutedText"))
 		local indicatorGoal = { Size = UDim2.fromOffset(3, selected and 16 or 0) }
+		self._indicator.BackgroundColor3 = Theme.Get(zetaActive and "Active" or "Accent")
 		if instant then
 			for property, value in buttonGoal do
 				self.Button[property] = value
@@ -144,7 +146,7 @@ return function(import)
 			Animation:Play(self._title, { TextColor3 = textColor }, { Duration = Animation.Duration.Fast })
 			Animation:Play(self._indicator, indicatorGoal, { Duration = Animation.Duration.Fast })
 		end
-		self._icon:SetColor(selected and "Text" or "MutedText")
+		self._icon:SetColor(selected and (zetaActive and "Active" or "Text") or (hover and zetaActive and "Hover" or "MutedText"))
 	end
 
 	function Tab:_SetSelected(selected)

@@ -46,7 +46,7 @@ return function(import)
 		local tab = Tab.new(window, { Title = "Home", Icon = "home" })
 		tab.IsHome = true
 		tab.Button.LayoutOrder = 0
-		tab:_SetCompact(true)
+		tab:_SetCompact(window._compact)
 		window:SelectTab(tab)
 		local cleanup = tab.Cleanup
 		local page = tab.Page
@@ -70,10 +70,10 @@ return function(import)
 		Utility.Create("UICorner", { CornerRadius = UDim.new(1, 0), Parent = avatar })
 		local display = text(cleanup, profile, player and player.DisplayName or "Player unavailable", 14, 15, "Text", true)
 		display.Position = UDim2.fromOffset(74, 14)
-		display.Size = UDim2.new(1, -104, 0, 21)
+		display.Size = UDim2.new(1, -84, 0, 21)
 		local username = text(cleanup, profile, player and ("@" .. player.Name) or "Unavailable", 39, 12, "MutedText")
 		username.Position = UDim2.fromOffset(74, 39)
-		username.Size = UDim2.new(1, -104, 0, 18)
+		username.Size = UDim2.new(1, -84, 0, 18)
 		if player then
 			cleanup:Add(task.spawn(function()
 				local ok, url = pcall(function()
@@ -82,11 +82,6 @@ return function(import)
 				if ok and type(url) == "string" and url ~= "" and avatar.Parent then avatar.Image = url end
 			end))
 		end
-		Icons.Create(profile, "chevron-right", {
-			Size = 14, Color = "MutedText", Cleanup = cleanup,
-			Position = UDim2.new(1, -23, 0.5, -7),
-		})
-
 		local metrics = Utility.Create("Frame", {
 			Name = "Metrics", BackgroundTransparency = 1, LayoutOrder = 2,
 			Size = UDim2.new(1, 0, 0, 154), Parent = page,
@@ -156,21 +151,47 @@ return function(import)
 			end))
 		end
 
-		local function refresh()
+		local function refreshTime()
 			local okTime, time = pcall(os.date, "%X")
 			values.Time.Text = okTime and time or "Unavailable"
+		end
+		local function refreshPlayers(changedPlayer, leaving)
+			local players = Players:GetPlayers()
+			local count = #players
+			if changedPlayer then
+				local included = table.find(players, changedPlayer) ~= nil
+				if leaving and included then count -= 1 end
+				if not leaving and not included then count += 1 end
+			end
 			local okMax, maximum = pcall(function() return Players.MaxPlayers end)
-			values.Players.Text = string.format("%d / %s", #Players:GetPlayers(), okMax and tostring(maximum) or "?")
+			values.Players.Text = string.format("%d / %s", count, okMax and tostring(maximum) or "?")
+		end
+		local function refreshPing()
 			if player then
 				local okPing, ping = pcall(function() return player:GetNetworkPing() end)
 				values.Ping.Text = okPing and type(ping) == "number" and string.format("%d ms", math.floor(ping * 1000 + 0.5)) or "Unavailable"
 			end
 		end
-		refresh()
+		refreshTime()
+		refreshPlayers()
+		refreshPing()
+		cleanup:Add(Players.PlayerAdded:Connect(function(joined)
+			refreshPlayers(joined, false)
+		end))
+		cleanup:Add(Players.PlayerRemoving:Connect(function(leaving)
+			refreshPlayers(leaving, true)
+		end))
 		local updater = task.spawn(function()
+			local elapsed = 0
 			while not cleanup:IsCleaned() do
-				task.wait(15)
-				if not cleanup:IsCleaned() then refresh() end
+				task.wait(1)
+				if cleanup:IsCleaned() then break end
+				refreshTime()
+				elapsed += 1
+				if elapsed >= 5 then
+					elapsed = 0
+					refreshPing()
+				end
 			end
 		end)
 		cleanup:Add(updater)

@@ -50,24 +50,18 @@ return function(import)
 		local cleanup = self.Cleanup
 		local flat = opts.Flat == true
 
-		local frame, stroke = Widgets.Surface(cleanup, {
+		local frame = Widgets.Surface(cleanup, {
 			Name = kind,
 			Parent = ctx.Parent,
 			Fill = (not flat) and "SecondaryBackground" or nil,
 			Transparency = (not flat) and "ComponentTransparency" or nil,
-			Stroke = (not flat) and "Text" or nil,
 			Radius = Design.Radius.Card,
 			Size = UDim2.new(1, 0, 0, opts.MinHeight or 52),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			LayoutOrder = ctx.Order(),
 		})
 		cleanup:Add(frame)
-		self.Frame, self.Stroke = frame, stroke
-		if stroke then
-			Theme.BindFn(function()
-				stroke.Transparency = Theme.Get("ComponentStrokeTransparency")
-			end, cleanup)
-		end
+		self.Frame = frame
 
 		local rightWidth = opts.RightWidth or 0
 		local left = Utility.Create("Frame", {

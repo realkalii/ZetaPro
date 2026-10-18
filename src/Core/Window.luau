@@ -15,6 +15,7 @@ return function(import)
 	local Dialog = import("Components/Dialog")
 	local Design = import("Core/Design")
 	local Home = import("Core/Home")
+	local WindowSize = import("Core/WindowSize")
 
 	local Window = {}
 	Window.__index = Window
@@ -32,7 +33,7 @@ return function(import)
 		self.OnDestroy = Signal.new()
 		self.MinimizedChanged = Signal.new()
 		self.TabWidth = config.TabWidth or Design.Sidebar
-		self.MinSize = config.MinSize or Vector2.new(380, 280)
+		self.MinSize = config.MinSize or Vector2.new(560, 360)
 		self.MaxSize = config.MaxSize or Vector2.new(1000, 800)
 		self.Acrylic = config.Acrylic ~= false
 		self._searchEnabled = config.SearchEnabled ~= false
@@ -46,7 +47,7 @@ return function(import)
 
 		local gui = cleanup:Add(Utility.NewScreenGui("ZetaPro_Window", 100))
 		self.Gui = gui
-		local size = config.Size or UDim2.fromOffset(650, 455)
+		local size = WindowSize.Load(config, self.MinSize, self.MaxSize) or config.Size or UDim2.fromOffset(650, 455)
 
 		local root = Widgets.Surface(cleanup, {
 			Class = "CanvasGroup",
@@ -219,6 +220,11 @@ return function(import)
 			Parent = root,
 		})
 		self._sidebar = sidebar
+		Theme.BindFn(function()
+			local color = Theme.Get("Sidebar")
+			sidebar.BackgroundTransparency = color and 0 or 1
+			if color then sidebar.BackgroundColor3 = color end
+		end, cleanup)
 		Widgets.Surface(cleanup, {
 			Name = "SidebarLine",
 			Parent = sidebar,
@@ -372,7 +378,7 @@ return function(import)
 		end))
 
 		Drag.Attach(topbar, root, cleanup)
-		if config.Resize == true then
+		do
 			local grip = Utility.Create("TextButton", {
 				Name = "ResizeGrip",
 				BackgroundTransparency = 1,
@@ -386,11 +392,17 @@ return function(import)
 			Drag.Resize(grip, root, cleanup, {
 				Min = self.MinSize,
 				Max = self.MaxSize,
+				GetBounds = function()
+					return self:_SizeBounds()
+				end,
 				GetScale = function()
 					return Theme.Scale
 				end,
 				OnResize = function()
 					self:_Clamp()
+				end,
+				OnEnd = function()
+					if not self._destroyed then WindowSize.Save(config, root.Size) end
 				end,
 			})
 		end
@@ -507,23 +519,28 @@ return function(import)
 		return self
 	end
 
+	function Window:_SizeBounds()
+		local camera = workspace.CurrentCamera
+		local maxW, maxH = self.MaxSize.X, self.MaxSize.Y
+		if camera then
+			local viewport = camera.ViewportSize
+			local scale = Theme.Scale
+			maxW = math.max(1, math.min(maxW, viewport.X / scale - 24))
+			maxH = math.max(1, math.min(maxH, viewport.Y / scale - 24))
+		end
+		local minW = math.min(self.MinSize.X, maxW)
+		local minH = math.min(self.MinSize.Y, maxH)
+		return Vector2.new(minW, minH), Vector2.new(maxW, maxH)
+	end
+
 	function Window:_Clamp()
 		if self._destroyed then
 			return
 		end
-		local camera = workspace.CurrentCamera
-		if not camera then
-			return
-		end
-		local viewport = camera.ViewportSize
-		local scale = Theme.Scale
-		local maxW = math.min(self.MaxSize.X, viewport.X / scale - 24)
-		local maxH = math.min(self.MaxSize.Y, viewport.Y / scale - 24)
-		local minW = math.min(self.MinSize.X, maxW)
-		local minH = math.min(self.MinSize.Y, maxH)
+		local minimum, maximum = self:_SizeBounds()
 		local size = self.Root.Size
-		local width = math.clamp(size.X.Offset, minW, maxW)
-		local height = math.clamp(size.Y.Offset, minH, maxH)
+		local width = math.clamp(size.X.Offset, minimum.X, maximum.X)
+		local height = math.clamp(size.Y.Offset, minimum.Y, maximum.Y)
 		if width ~= size.X.Offset or height ~= size.Y.Offset then
 			self.Root.Size = UDim2.fromOffset(width, height)
 		end
@@ -534,8 +551,8 @@ return function(import)
 			return
 		end
 		local width = self.Root.Size.X.Offset
-		local compact = true
-		local sidebar = width < 500 and Design.Sidebar or self.TabWidth
+		local compact = width < 540 or self.TabWidth < 120
+		local sidebar = compact and 52 or math.min(self.TabWidth, math.floor(width * 0.4))
 		self._compact = compact
 		self._sidebar.Size = UDim2.new(0, sidebar, 1, -(TOPBAR + 1))
 		self._content.Position = UDim2.fromOffset(sidebar, TOPBAR + 1)

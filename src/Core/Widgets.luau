@@ -81,12 +81,12 @@ return function(import)
 	function Widgets.Interactive(cleanup, target, trigger, opts)
 		opts = opts or {}
 		local base = opts.Base or "SecondaryBackground"
-		local hoverToken = opts.Hover or "Hover"
-		local pressedToken = opts.Pressed or "Pressed"
 		local hover, down, enabled = false, false, true
 		local handle = {}
 
 		local function apply(instant)
+			local hoverToken = opts.Hover or (Theme.Get("HoverSurface") and "HoverSurface" or "Hover")
+			local pressedToken = opts.Pressed or (Theme.Get("PressedSurface") and "PressedSurface" or "Pressed")
 			local color = Theme.Get(base)
 			local alpha = opts.Alpha and opts.Alpha[1]
 			if enabled and down then
