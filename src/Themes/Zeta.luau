@@ -1,14 +1,16 @@
--- Official ZETA identity: black, graphite and white with a single lime detail.
 return {
 	Background = Color3.fromRGB(11, 11, 11),
 	SecondaryBackground = Color3.fromRGB(30, 30, 30),
 	TertiaryBackground = Color3.fromRGB(41, 41, 41),
 	Text = Color3.fromRGB(242, 242, 242),
 	MutedText = Color3.fromRGB(128, 128, 128),
-	Accent = Color3.fromRGB(201, 255, 112),
+	Accent = Color3.fromRGB(216, 220, 226),
 	AccentText = Color3.fromRGB(10, 10, 10),
 	Border = Color3.fromRGB(38, 38, 38),
 	Hover = Color3.fromRGB(38, 38, 38),
 	Pressed = Color3.fromRGB(24, 24, 24),
+	ComponentTransparency = 0.5,
+	ElementTransparency = 0.25,
+	ComponentStrokeTransparency = 0.65,
 	AcrylicTransparency = 0.45,
 }
