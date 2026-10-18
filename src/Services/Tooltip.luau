@@ -45,11 +45,11 @@ return function(import)
 		Theme.BindScale(scale, root)
 	end
 
-	local function place()
+	local function place(override)
 		if not frame then
 			return
 		end
-		local point = Input.GetPointer()
+		local point = override or Input.GetPointer()
 		local viewport = gui.AbsoluteSize
 		local size = frame.AbsoluteSize
 		local x = math.clamp(point.X + 14, 4, math.max(4, viewport.X - size.X - 4))
@@ -100,6 +100,26 @@ return function(import)
 		table.insert(connections, target.MouseMoved:Connect(function()
 			if shown then
 				place()
+			end
+		end))
+		table.insert(connections, target.InputBegan:Connect(function(input)
+			if input.UserInputType ~= Enum.UserInputType.Touch then return end
+			ticket += 1
+			local mine = ticket
+			task.delay(DELAY, function()
+				if mine ~= ticket or type(handle.Text) ~= "string" or handle.Text == "" then return end
+				ensure()
+				label.Text = handle.Text
+				frame.Visible = true
+				shown = true
+				place(input.Position)
+				Animation:Play(frame, { GroupTransparency = 0 }, { Duration = 0.1 })
+			end)
+		end))
+		table.insert(connections, target.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.Touch then
+				ticket += 1
+				hide()
 			end
 		end))
 

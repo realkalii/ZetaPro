@@ -39,7 +39,6 @@ return function(import)
 		return item
 	end
 
-	-- Child scope: cleaned with its parent, or earlier on its own.
 	function Cleanup:Extend()
 		local child = Cleanup.new(self)
 		if self._cleaned then

@@ -7,8 +7,13 @@ return function(import)
 	}
 
 	local active = setmetatable({}, { __mode = "k" })
+	local GuiService = game:GetService("GuiService")
+	local function updateMotion()
+		local ok, reduced = pcall(function() return GuiService.ReducedMotionEnabled end)
+		if ok then Animation.Enabled = not reduced end
+	end
+	updateMotion()
 
-	-- opts: Duration, Style, Direction, Delay, OnComplete
 	function Animation:Play(object, props, opts)
 		opts = opts or {}
 		if not Animation.Enabled then

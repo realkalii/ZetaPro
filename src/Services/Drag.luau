@@ -11,8 +11,6 @@ return function(import)
 		return input.UserInputType == Enum.UserInputType.MouseMovement or input == origin
 	end
 
-	-- Calls onMove(position) on press and on every move until release.
-	-- Move listeners exist only while the pointer is held down.
 	function Drag.Track(handle, cleanup, onMove, onEnd)
 		local stopCurrent
 		cleanup:Add(function()
@@ -56,8 +54,6 @@ return function(import)
 		end))
 	end
 
-	-- Moves `target` while dragging `handle`. Position is clamped so the
-	-- anchor point always stays inside the parent.
 	function Drag.Attach(handle, target, cleanup, opts)
 		opts = opts or {}
 		local margin = opts.Margin or 24
@@ -87,8 +83,6 @@ return function(import)
 		end)
 	end
 
-	-- Resizes `target` (offset-sized) from a grip handle.
-	-- opts: Min, Max (Vector2), GetScale (function), OnResize (function)
 	function Drag.Resize(handle, target, cleanup, opts)
 		opts = opts or {}
 		local minSize = opts.Min or Vector2.new(300, 200)

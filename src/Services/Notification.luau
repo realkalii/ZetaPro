@@ -26,10 +26,15 @@ return function(import)
 			AutomaticSize = Enum.AutomaticSize.Y,
 			Parent = gui,
 		})
-		Widgets.List(holder, 8, { VerticalAlignment = Enum.VerticalAlignment.Bottom })
+		Widgets.List(holder, 6, { VerticalAlignment = Enum.VerticalAlignment.Bottom })
 		local scale = Instance.new("UIScale")
 		scale.Parent = holder
 		Theme.BindScale(scale, root)
+		local function reflow()
+			holder.Size = UDim2.new(0, math.max(180, math.min(300, gui.AbsoluteSize.X - 12)), 0, 0)
+		end
+		root:Add(gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(reflow))
+		reflow()
 	end
 
 	function Notification.Notify(config)
@@ -43,7 +48,8 @@ return function(import)
 			end
 		end)
 		table.insert(active, toast)
-		while #active > Notification.Max do
+		local viewportMax = math.max(2, math.min(Notification.Max, math.floor((gui.AbsoluteSize.Y - 20) / 80)))
+		while #active > viewportMax do
 			active[1]:Close()
 		end
 		return toast

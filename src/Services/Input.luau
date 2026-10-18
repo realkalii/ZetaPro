@@ -4,8 +4,6 @@ return function(import)
 	local Signal = import("Core/Signal")
 	local Utility = import("Core/Utility")
 
-	-- Single, shared input pipeline. Components never create their own
-	-- UserInputService connections for keybinds, drag or pointer tracking.
 	local Input = {
 		Began = Signal.new(),
 		Changed = Signal.new(),
@@ -63,7 +61,6 @@ return function(import)
 		)
 	end
 
-	-- Pointer position in GUI space (same space as AbsolutePosition).
 	function Input.GetPointer()
 		if pointer then
 			return pointer
@@ -103,8 +100,6 @@ return function(import)
 		return #binds
 	end
 
-	-- Waits for the next key / mouse button. callback(key, cancelled).
-	-- Escape cancels, Backspace clears, left click / touch cancels.
 	function Input.Capture(callback)
 		Input.Init()
 		Input.Capturing = true

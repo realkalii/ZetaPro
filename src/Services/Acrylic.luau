@@ -2,9 +2,6 @@ return function(import)
 	local Lighting = game:GetService("Lighting")
 	local Animation = import("Services/Animation")
 
-	-- Acrylic = themed translucent surface (handled by Window) plus an optional
-	-- screen blur while the window is visible. Blur is screen-wide by nature
-	-- (BlurEffect), and is skipped when the environment does not allow it.
 	local Acrylic = {}
 
 	function Acrylic.Supported()
