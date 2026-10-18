@@ -29,6 +29,9 @@ export type Theme = {
 	Info: Color3?,
 	Overlay: Color3?,
 	AcrylicTransparency: number?,
+	ElementTransparency: number?,
+	ComponentTransparency: number?,
+	ComponentStrokeTransparency: number?,
 }
 
 export type WindowConfig = {
@@ -47,6 +50,8 @@ export type WindowConfig = {
 	OnClose: (() -> ())?,
 	SearchEnabled: boolean?,
 	MinimizeKey: Enum.KeyCode?,
+	Discord: { Invite: string }?,
+	RestoreButton: boolean?,
 }
 
 export type TabConfig = { Title: string, Icon: Icon? }
@@ -56,11 +61,12 @@ export type BaseConfig = {
 	Description: string?,
 	Icon: Icon?,
 	Tooltip: string?,
+	SearchKeywords: { string }?,
 	Visible: boolean?,
 	Enabled: boolean?,
 }
 
-export type ButtonConfig = BaseConfig & { Callback: (() -> ())? }
+export type ButtonConfig = BaseConfig & { Callback: (() -> ())?, ButtonText: string? }
 export type ToggleConfig = BaseConfig & { Default: boolean?, Callback: ((boolean) -> ())? }
 export type SliderConfig = BaseConfig & {
 	Min: number,
@@ -128,6 +134,11 @@ export type Component = {
 export type Section = {
 	Title: string,
 	SetTitle: (self: Section, text: string) -> (),
+	SetVisible: (self: Section, visible: boolean) -> (),
+	Collapse: (self: Section) -> (),
+	Expand: (self: Section) -> (),
+	Toggle: (self: Section) -> (),
+	IsExpanded: (self: Section) -> boolean,
 	Destroy: (self: Section) -> (),
 	[string]: any,
 }
@@ -138,13 +149,14 @@ export type Tab = {
 	Deselect: (self: Tab) -> (),
 	SetTitle: (self: Tab, text: string) -> (),
 	SetIcon: (self: Tab, icon: Icon?) -> (),
-	AddSection: (self: Tab, title: string) -> Section,
+	AddSection: (self: Tab, title: string, options: { Collapsible: boolean?, DefaultExpanded: boolean? }?) -> Section,
 	Destroy: (self: Tab) -> (),
 	[string]: any,
 }
 
 export type Window = {
 	Options: { [string]: Component },
+	Home: Tab,
 	AddTab: (self: Window, config: TabConfig) -> Tab,
 	SelectTab: (self: Window, tab: Tab | number | string) -> (),
 	SetTitle: (self: Window, text: string) -> (),
