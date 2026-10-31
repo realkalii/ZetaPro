@@ -1,29 +1,28 @@
--- Notifications: types, stacking, manual close, persistence.
 local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
-local Window = Zeta:CreateWindow({ Title = "Notifications", SubTitle = "Demo" })
-local Tab = Window:AddTab({ Title = "Notify", Icon = "bell" })
+local Window = Zeta:CreateWindow({ Title = "Notifications", SubTitle = "Status center" })
+local Tab = Window:AddTab({ Title = "Status", Icon = "bell" })
 
 for _, kind in { "Info", "Success", "Warning", "Error" } do
 	Tab:AddButton({
 		Title = kind,
 		Description = "Show a " .. string.lower(kind) .. " notification",
 		Callback = function()
-			Zeta:Notify({ Title = kind, Content = "This is a " .. string.lower(kind) .. " message.", Type = kind, Duration = 4 })
+			Zeta:Notify({ Title = kind .. " status", Content = "The status center is active.", Type = kind, Duration = 4 })
 		end,
 	})
 end
 
 local Persistent
 Tab:AddButton({
-	Title = "Persistent",
-	Description = "Stays until closed",
+	Title = "Pin a notice",
+	Description = "Keep a notice visible until it is dismissed.",
 	Callback = function()
-		Persistent = Zeta:Notify({ Title = "Pinned", Content = "Close me manually.", Duration = 0 })
+		Persistent = Zeta:Notify({ Title = "Pinned notice", Content = "This notice remains visible.", Duration = 0 })
 	end,
 })
 Tab:AddButton({
-	Title = "Close persistent",
+	Title = "Dismiss pinned notice",
 	Callback = function()
 		if Persistent then
 			Persistent:Close()
@@ -31,7 +30,7 @@ Tab:AddButton({
 	end,
 })
 Tab:AddButton({
-	Title = "Flood (stacking limit)",
+	Title = "Preview the stack limit",
 	Callback = function()
 		for index = 1, 8 do
 			Zeta:Notify({ Title = "Notification " .. index, Duration = 5 })

@@ -1,4 +1,3 @@
--- A complete settings page backed by Zeta.Config (export / import / save).
 local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
 local Window = Zeta:CreateWindow({
@@ -63,10 +62,11 @@ Profile:AddButton({
 	end,
 })
 Profile:AddButton({
-	Title = "Print export",
+	Title = "Review saved values",
 	Callback = function()
-		for key, value in Zeta.Config:Export() do
-			print(key, value)
-		end
+		local values = Zeta.Config:Export()
+		local count = 0
+		for _ in values do count += 1 end
+		Zeta:Notify({ Title = "Current profile", Content = count .. " settings available", Type = "Info" })
 	end,
 })

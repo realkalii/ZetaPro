@@ -1,4 +1,3 @@
--- Theme hot swap and custom themes.
 local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
 Zeta:RegisterTheme("MyRedTheme", {
@@ -12,7 +11,6 @@ Zeta:RegisterTheme("MyRedTheme", {
 	Border = Color3.fromRGB(48, 30, 34),
 })
 
--- Themes can also extend another one.
 Zeta:RegisterTheme("MyRedLight", {
 	Base = "MyRedTheme",
 	Text = Color3.fromRGB(255, 255, 255),
@@ -26,7 +24,7 @@ Tab:AddDropdown("Theme", {
 	Values = Zeta:GetThemes(),
 	Default = "Pure Red",
 	Callback = function(name)
-		Zeta:SetTheme(name) -- every element updates without being rebuilt
+		Zeta:SetTheme(name)
 	end,
 })
 
@@ -41,12 +39,9 @@ Tab:AddSlider("Scale", {
 	end,
 })
 
-Tab:AddToggle("Acrylic", {
+Tab:AddParagraph({
 	Title = "Acrylic",
-	Default = true,
-	Callback = function(value)
-		Window:SetAcrylic(value)
-	end,
+	Content = "Translucent surfaces stay enabled. Blur is optional in the window configuration.",
 })
 
 Tab:AddButton({

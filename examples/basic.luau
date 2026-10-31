@@ -1,29 +1,27 @@
--- Minimal ZETA Pro UI.
 local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
 local Window = Zeta:CreateWindow({
-	Title = "ZETA Pro",
-	SubTitle = "Basic",
+	Title = "ZetaPro",
+	SubTitle = "Quick start",
 	Size = UDim2.fromOffset(620, 480),
 	Theme = "Dark",
-	Acrylic = true,
 	MinimizeKey = Enum.KeyCode.RightShift,
 })
 
-local Main = Window:AddTab({ Title = "Main", Icon = "home" })
+local Main = Window:AddTab({ Title = "Workspace", Icon = "layout-dashboard" })
 
 Main:AddButton({
-	Title = "Execute",
-	Description = "Execute the selected action",
+	Title = "Confirm setup",
+	Description = "Verify that the interface is responding.",
 	Callback = function()
-		print("Executed")
+		Zeta:Notify({ Title = "Action executed", Content = "The basic window is ready.", Type = "Success" })
 	end,
 })
 
 Main:AddToggle("Enabled", {
-	Title = "Enabled",
+	Title = "Session alerts",
 	Default = false,
 	Callback = function(value)
-		print("Enabled:", value)
+		Zeta:Notify({ Title = value and "Enabled" or "Disabled", Type = "Info" })
 	end,
 })

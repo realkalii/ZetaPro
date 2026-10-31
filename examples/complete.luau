@@ -1,143 +1,154 @@
--- Demonstrates almost the whole public API.
 local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
-local Window = Zeta:CreateWindow({
-	Title = "ZETA Pro",
-	SubTitle = "Complete",
-	Icon = "terminal",
-	Size = UDim2.fromOffset(620, 480),
-	MinSize = Vector2.new(420, 320),
-	MaxSize = Vector2.new(1000, 800),
-	Theme = "Dark",
-	Acrylic = true,
-	Resize = true,
-	CloseButton = true,
-	MinimizeKey = Enum.KeyCode.RightShift,
+Zeta:RegisterTheme("Studio Silver", {
+	Base = "Zeta",
+	Accent = Color3.fromRGB(210, 218, 235),
 })
-
-local Main = Window:AddTab({ Title = "Main", Icon = "home" })
-local Visuals = Window:AddTab({ Title = "Visuals", Icon = "eye" })
-local Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
-
-local Movement = Main:AddSection("Movement")
-
-local Execute = Movement:AddButton({
-	Title = "Execute",
-	Description = "Execute the selected action",
-	Icon = "play",
-	Callback = function()
-		Zeta:Notify({ Title = "ZETA Pro", Content = "Operation completed.", Type = "Success", Duration = 4 })
-	end,
-})
-Execute:SetTooltip("Runs the action once")
-
-local AutoFarm = Movement:AddToggle("AutoFarm", {
-	Title = "Auto Farm",
-	Description = "Automatically farms resources",
-	Default = false,
-	Callback = function(value)
-		print("AutoFarm:", value)
-	end,
-})
-AutoFarm:OnChanged(function(value)
-	print("OnChanged:", value)
+Zeta:RegisterIconProvider("Community", function(name)
+	if name == "discord-mark" then
+		return { Type = "Image", Source = "rbxassetid://18505728250", Tint = false }
+	end
 end)
+Zeta:SetIconProvider("Community")
 
-Movement:AddSlider("WalkSpeed", {
-	Title = "Walk Speed",
-	Description = "Change your movement speed",
-	Min = 16,
-	Max = 250,
-	Default = 16,
-	Rounding = 0,
-	Callback = function(value)
-		print("Speed:", value)
+local Window = Zeta:CreateWindow({
+	Title = "ZetaPro",
+	SubTitle = "Complete showcase",
+	Icon = "layers",
+	Theme = "Zeta",
+	Size = UDim2.fromOffset(720, 510),
+	SearchEnabled = true,
+	CloseButton = true,
+	MinimizeKey = Enum.KeyCode.RightControl,
+	Discord = { Invite = "https://discord.gg/HCE8KHzzDn" },
+})
+local Controls = Window:AddTab({ Title = "Controls", Icon = "sliders-horizontal" })
+local Appearance = Window:AddTab({ Title = "Appearance", Icon = "palette" })
+local Workspace = Window:AddTab({ Title = "Workspace", Icon = "folder-cog" })
+
+local function notify(kind, title, content)
+	Zeta:Notify({ Type = kind, Title = title, Content = content, Duration = 4 })
+end
+
+local Overview = Controls:AddSection("Overview")
+local Activity = Overview:AddLabel({ Text = "Ready", Icon = "activity" })
+local activity = Zeta.State.new("Ready")
+activity:OnChanged(function(value) Activity:SetText(value) end)
+Overview:AddParagraph({ Title = "Current session", Content = "Home shows live player information and the official Discord invite.", Icon = "home" })
+Overview:AddButton({ Title = "Open Home", Icon = "home", Callback = function() Window:SelectTab("Home") end })
+Overview:AddLabel({ Text = "Official community", Icon = "discord-mark" })
+Overview:AddDivider()
+
+local Inputs = Controls:AddSection("Inputs", { Collapsible = true })
+Inputs:AddToggle("LivePreview", {
+	Title = "Live preview", Default = true, Icon = "eye", Tooltip = "Updates the session status",
+	Callback = function(value) activity:Set(value and "Preview active" or "Preview paused") end,
+})
+Inputs:AddSlider("Intensity", {
+	Title = "Intensity", Min = 0, Max = 100, Default = 50, Increment = 5, Icon = "gauge",
+	Callback = function(value) activity:Set("Intensity " .. value .. "%") end,
+})
+Inputs:AddDropdown("Mode", {
+	Title = "Display mode", Values = { "Balanced", "Compact", "Expanded" }, Default = "Balanced",
+	Callback = function(value) Activity:SetText(value .. " mode") end,
+})
+Inputs:AddMultiDropdown("Channels", {
+	Title = "Output channels", Values = { "Visual", "Audio", "Alerts" },
+	Default = { Visual = true, Alerts = true },
+	Callback = function(values)
+		local count = 0
+		for _, selected in values do if selected then count += 1 end end
+		activity:Set(count .. " channels selected")
 	end,
 })
-
-Movement:AddDivider({})
-
-local Combat = Main:AddSection("Combat")
-
-Combat:AddDropdown("Mode", {
-	Title = "Mode",
-	Values = { "Legit", "Rage", "Silent" },
-	Multi = false,
-	Default = 1,
-	Callback = function(value)
-		print("Mode:", value)
-	end,
+Inputs:AddInput("ProfileName", {
+	Title = "Profile name", Placeholder = "Profile name", Default = "ZetaPro", MaxLength = 32,
+	Callback = function(value) if value ~= "" then Window:SetSubtitle(value) end end,
+})
+Inputs:AddKeybind("ActionKey", {
+	Title = "Status shortcut", Default = Enum.KeyCode.F6,
+	Callback = function(key) notify("Info", "Shortcut used", key.Name) end,
+	ChangedCallback = function(key) activity:Set("Shortcut: " .. key.Name) end,
+})
+local Accent
+Accent = Inputs:AddColorpicker("Accent", {
+	Title = "Selected color", Default = Color3.fromRGB(192, 192, 192), Transparency = 0,
+	Callback = function() activity:Set("Color " .. Accent:GetHex()) end,
 })
 
-Combat:AddDropdown("Targets", {
-	Title = "Targets",
-	Values = { "Players", "NPCs", "Bosses" },
-	Multi = true,
-	Default = { Players = true },
-	Callback = function(map)
-		print("Players:", map.Players, "NPCs:", map.NPCs, "Bosses:", map.Bosses)
-	end,
+local Themes = Appearance:AddSection("Themes")
+Themes:AddDropdown("Theme", {
+	Title = "Built-in theme", Values = Zeta:GetThemes(), Default = "Zeta",
+	Callback = function(name) Zeta:SetTheme(name) end,
 })
-
-Combat:AddInput("Username", {
-	Title = "Username",
-	Description = "Enter a username",
-	Default = "",
-	Placeholder = "Username...",
-	MaxLength = 20,
-	Callback = function(value)
-		print("Username:", value)
-	end,
+Themes:AddSlider("Scale", {
+	Title = "Interface scale", Min = 0.75, Max = 1.3, Default = 1, Increment = 0.05, Rounding = 2,
+	Callback = function(value) Zeta:SetScale(value) end,
 })
-
-Combat:AddKeybind("ActionKey", {
-	Title = "Action hotkey",
-	Default = Enum.KeyCode.RightShift,
+Themes:AddButton({
+	Title = "Use Gotham", Icon = "type",
 	Callback = function()
-		Zeta:Notify({ Title = "Hotkey", Content = "Action hotkey pressed.", Type = "Info" })
+		Zeta:SetFont(Enum.Font.Gotham)
+		notify("Info", "Font applied", "Gotham")
 	end,
 })
-
-Visuals:AddColorpicker("Accent", {
-	Title = "Accent Color",
-	Default = Color3.fromRGB(255, 255, 255),
-	Transparency = 0,
-	Callback = function(color, transparency)
-		print("Accent:", color, transparency)
-	end,
+local WindowControls = Appearance:AddSection("Window", { Collapsible = true })
+WindowControls:AddParagraph({
+	Title = "Glass and resizing",
+	Content = "Acrylic is always on. Drag the lower-right handle to resize; size persists when file access is available.",
 })
-
-Visuals:AddParagraph({
-	Title = "Information",
-	Content = "This is an informational component.",
-	Icon = "info",
-})
-Visuals:AddLabel({ Text = "Labels are plain, flat text rows." })
-
-Settings:AddButton({
-	Title = "Confirm dialog",
-	Description = "Opens a confirmation dialog",
+local searchEnabled = true
+WindowControls:AddButton({
+	Title = "Toggle search", Icon = "search",
 	Callback = function()
-		local Dialog = Window:CreateDialog({ Title = "Confirm", Content = "Are you sure?" })
-		Dialog:AddButton({ Title = "Cancel" })
-		Dialog:AddButton({
-			Title = "Confirm",
-			Primary = true,
+		searchEnabled = not searchEnabled
+		Window:SetSearchEnabled(searchEnabled)
+	end,
+})
+WindowControls:AddButton({ Title = "Minimize window", Icon = "minus", Callback = function() Window:Minimize() end })
+
+local Notifications = Workspace:AddSection("Notifications")
+for _, kind in { "Info", "Success", "Warning", "Error" } do
+	Notifications:AddButton({
+		Title = kind .. " notification", Icon = "bell",
+		Callback = function() notify(kind, kind .. " status", "Notification styling follows the active theme.") end,
+	})
+end
+Notifications:AddButton({
+	Title = "Open dialog", Icon = "panel-top",
+	Callback = function()
+		local dialog = Window:CreateDialog({ Title = "Confirm reset", Content = "Reset registered component values?" })
+		dialog:AddButton({ Title = "Keep values" })
+		dialog:AddButton({
+			Title = "Reset", Primary = true,
 			Callback = function()
-				Zeta:Notify({ Title = "Confirmed", Type = "Info" })
+				Zeta.Config:Reset()
+				notify("Success", "Values reset", "Registered defaults are active.")
 			end,
 		})
 	end,
 })
 
-Settings:AddDropdown("ThemeName", {
-	Title = "Theme",
-	Values = Zeta:GetThemes(),
-	Default = Zeta:GetTheme(),
-	Callback = function(name)
-		Zeta:SetTheme(name)
+local Storage = Workspace:AddSection("Configuration", { Collapsible = true })
+Storage:AddButton({
+	Title = "Save configuration", Icon = "save",
+	Callback = function()
+		local ok, reason = Zeta.Config:Save("complete-showcase")
+		notify(ok and "Success" or "Warning", ok and "Configuration saved" or "Save unavailable", ok and "complete-showcase" or tostring(reason))
 	end,
 })
-
-Window:SetSearchEnabled(true)
-Window:SelectTab(1)
+Storage:AddButton({
+	Title = "Load configuration", Icon = "folder-open",
+	Callback = function()
+		local ok, reason = Zeta.Config:Load("complete-showcase")
+		notify(ok and "Success" or "Warning", ok and "Configuration loaded" or "Load unavailable", ok and "complete-showcase" or tostring(reason))
+	end,
+})
+Storage:AddButton({
+	Title = "Inspect configuration", Icon = "database",
+	Callback = function()
+		local count = 0
+		for _ in Zeta.Config:Export() do count += 1 end
+		notify("Info", "Registered values", count .. " settings")
+	end,
+})

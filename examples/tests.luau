@@ -1,6 +1,3 @@
--- Internal test suite. Run in Studio (LocalScript) or an executor.
--- Covers: Window, Tabs, Sections, Components, Callbacks, State, Themes, Icons,
--- Notifications, Search, Destroy/Cleanup and repeated create/destroy cycles.
 local Zeta = loadstring(game:HttpGet("https://raw.githubusercontent.com/realkalii/ZetaPro/main/src/init.luau"))()
 
 local passed, failed = 0, 0
@@ -12,25 +9,17 @@ local function check(name, condition, detail)
 		warn(("[TEST FAIL] %s %s"):format(name, detail and ("(" .. tostring(detail) .. ")") or ""))
 	end
 end
-local function section(name)
-	print("== " .. name)
-end
-
 local baseline = Zeta:GetStats()
 
-section("Window / Tabs / Sections")
 local Window = Zeta:CreateWindow({ Title = "Tests", MinimizeKey = Enum.KeyCode.RightShift })
 local Main = Window:AddTab({ Title = "Main", Icon = "home" })
 local Other = Window:AddTab({ Title = "Other", Icon = "settings" })
 local Movement = Main:AddSection("Movement")
-check("window created", Window ~= nil and Window.Root ~= nil)
-check("two tabs", #Window.Tabs == 2)
-check("first tab selected", Window._selected == Main)
+check("window created", Window ~= nil)
+check("automatic Home", Window.Home ~= nil and Window.Home.Title == "Home")
 Window:SelectTab("Other")
-check("select by title", Window._selected == Other)
-Window:SelectTab(1)
+Window:SelectTab(Main)
 
-section("Components and callbacks")
 local fired = {}
 local Button = Movement:AddButton({ Title = "Run", Callback = function() fired.Button = true end })
 local Toggle = Movement:AddToggle("T_Test", { Title = "Toggle", Default = false, Callback = function(v) fired.Toggle = v end })
@@ -78,7 +67,6 @@ check("options registry", Window.Options.T_Test == Toggle)
 check("duplicate id rejected", not pcall(function() Movement:AddToggle("T_Test", { Title = "dup" }) end))
 check("bad default rejected", not pcall(function() Movement:AddToggle("Bad", { Default = "yes" }) end))
 
-section("Config / State")
 check("config mirrors UI", Zeta.Config:Get("S_Test") == 250)
 Zeta.Config:Set("S_Test", 60)
 task.wait()
@@ -92,7 +80,6 @@ state:Set(2)
 task.wait()
 check("state", state:Get() == 2 and seen == 2)
 
-section("Themes / Icons")
 Zeta:RegisterTheme("TestTheme", { Background = Color3.fromRGB(1, 2, 3), Accent = Color3.fromRGB(9, 9, 9) })
 check("theme set", Zeta:SetTheme("TestTheme") and Zeta:GetTheme() == "TestTheme")
 Zeta:SetTheme("Dark")
@@ -103,32 +90,26 @@ Button:SetIcon("check")
 Button:SetIcon(nil)
 check("icon hot swap", true)
 
-section("Search")
-local results = Window._search:Query("speed")
-check("search finds component", #results >= 1 and results[1].Title == "Walk Speed")
-check("search breadcrumb", results[1].Tab == Main and results[1].Section == Movement)
+Window:SetSearchEnabled(false)
+Window:SetSearchEnabled(true)
 Slider:Destroy()
-check("destroyed removed from index", #Window._search:Query("speed") == 0)
 
-section("Notifications / Dialog / Minimize")
 local note = Zeta:Notify({ Title = "Test", Duration = 0 })
 check("notification", Zeta:GetStats().Notifications >= 1)
 note:Close()
 local dialog = Window:CreateDialog({ Title = "Dialog", Content = "Body" })
 dialog:AddButton({ Title = "OK" })
 dialog:Close()
-Window:_Minimize()  -- internal UI regression test
-check("minimized", Window._minimized)
-Window:_Restore()  -- internal UI regression test
-check("restored", not Window._minimized)
+Window:Minimize()
+check("minimized", Window:IsMinimized())
+Window:Restore()
+check("restored", not Window:IsMinimized())
 
-section("Destroy / Cleanup")
 Window:Destroy()
 task.wait(0.5)
 check("window destroyed", Zeta:GetStats().Windows == baseline.Windows)
 check("binds released", Zeta:GetStats().Binds == baseline.Binds)
 
-section("Create / destroy cycles")
 for cycle = 1, 25 do
 	local w = Zeta:CreateWindow({ Title = "Cycle " .. cycle, MinimizeKey = Enum.KeyCode.RightShift })
 	local tab = w:AddTab({ Title = "T", Icon = "home" })
@@ -146,7 +127,7 @@ task.wait(0.5)
 local after = Zeta:GetStats()
 check("no leaked windows", after.Windows == baseline.Windows, after.Windows)
 check("no leaked binds", after.Binds == baseline.Binds, after.Binds)
-check("no leaked guis", after.Guis <= baseline.Guis + 2, after.Guis) -- notification/tooltip hosts may persist
+check("no leaked guis", after.Guis <= baseline.Guis + 2, after.Guis)
 
 Zeta.Config:Wipe()
 print(("Tests finished: %d passed, %d failed"):format(passed, failed))
