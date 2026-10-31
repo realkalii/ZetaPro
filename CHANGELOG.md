@@ -1,5 +1,35 @@
 # Changelogs
 
+## ZETA Pro v1.0.3
+
+««A refined interface, smarter window management, and an improved user experience.»»
+
+### Added
+
+- Automatic Home tab with player profile, game information, executor details, clock, and performance statistics.
+- Discord integration on Home with an invite-copy action.
+- Window size persistence across sessions when filesystem support is available.
+- Dedicated window sizing and design modules.
+
+### Improved
+
+- Redesigned Zeta and midnight theme with refined colors, transparency, and visual consistency.
+- Improved window positioning, resizing, and viewport handling.
+- Refined component layouts, spacing, and animations.
+- Improved notification presentation and behavior.
+- Enhanced search, tabs, and section layouts.
+- Improved dragging and mobile interaction.
+- Updated theme styling across built-in themes.
+- Updated repository documentation and examples for the current API.
+
+### Fixed
+
+- Window sizing and positioning inconsistencies.
+- Various UI rendering, spacing, and interaction issues.
+- Component and service integration issues.
+
+---
+
 ## ZETA Pro v1.0.2
 
 > «UI refresh and floating restore button rework.»
