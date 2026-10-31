@@ -1,14 +1,14 @@
 # Toggle
 
 ```lua
-local Toggle = Tab:AddToggle("AutoFarm", {
-    Title = "Auto Farm",
-    Description = "Automatically farms resources",
+local Toggle = Tab:AddToggle("Alerts", {
+    Title = "Release alerts",
+    Description = "Show status notifications",
     Default = false,
-    Callback = function(value) print(value) end,
+    Callback = function(value)
+        Zeta:Notify({ Title = value and "Alerts on" or "Alerts off", Type = "Info" })
+    end,
 })
 Toggle:SetValue(true)
-print(Toggle:GetValue())
-Toggle:OnChanged(function(value) end)
 ```
 `Default` must be a boolean; anything else raises a `[ZETA][ERROR]`. State is shown by knob position as well as color.

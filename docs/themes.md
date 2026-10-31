@@ -1,6 +1,6 @@
 # Themes
 
-Built in: `Dark`, `Light`, `Midnight`, `Zeta`, and `Pure Red`. `Halloween 2026` is a limited theme scheduled for removal after Halloween 2026.
+Built in: `Dark`, `Light`, `Midnight`, `Zeta`, `Pure Red`, and `Halloween 2026`. Halloween 2026 is included in v1.0.3.
 
 ```lua
 Zeta:SetTheme("Midnight")
@@ -19,6 +19,8 @@ Zeta:RegisterTheme("Mine", {
     Border = Color3.fromRGB(40, 40, 44),
 })
 ```
-Tokens: `Background, SecondaryBackground, TertiaryBackground, Text, MutedText, Accent, AccentText, Border, Hover, Pressed, Success, Warning, Error, Info, Overlay` (Color3) and `AcrylicTransparency`, `ElementTransparency`, `ComponentTransparency`, `ComponentStrokeTransparency` (numbers). Missing tokens fall back to defaults; a wrongly typed token raises an error.
+Color tokens: `Background`, `Sidebar`, `SecondaryBackground`, `TertiaryBackground`, `Text`, `MutedText`, `Accent`, `AccentText`, `Border`, `Hover`, `Active`, `HoverSurface`, `PressedSurface`, `Pressed`, `Success`, `Warning`, `Error`, `Info`, and `Overlay`. Transparency tokens: `AcrylicTransparency`, `SidebarTransparency`, `ElementTransparency`, `ComponentTransparency`, and `ComponentStrokeTransparency`. Missing tokens fall back to the base or defaults; a wrongly typed known token raises an error. `Secondary` and `Tertiary` are aliases.
 
 Every component binds to tokens, so `SetTheme` updates all existing UI instantly. `Zeta:SetFont(Enum.Font.Gotham)` and `Zeta:SetScale(0.9)` also apply live.
+
+Every built-in theme retains translucent acrylic surfaces. The v1.0.3 implementation applies screen blur when supported even if `Blur = false` is supplied; see [Window](window.md).

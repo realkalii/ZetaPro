@@ -8,24 +8,32 @@ In Studio use Rojo and `require` the `src` folder.
 
 ## 2. Create a window and a tab
 ```lua
-local Window = Zeta:CreateWindow({ Title = "My UI", SubTitle = "V1", Theme = "Dark" })
+local Window = Zeta:CreateWindow({
+    Title = "My Hub",
+    SubTitle = "v1.0.3",
+    Theme = "Dark",
+    Discord = { Invite = "https://discord.gg/HCE8KHzzDn" },
+})
 local Main = Window:AddTab({ Title = "Main", Icon = "home" })
 ```
 
+Home is added automatically before your custom tabs. The Discord card appears when `Discord.Invite` is a valid invite URL.
+
 ## 3. Add components
 ```lua
-local Section = Main:AddSection("Movement")
-Section:AddToggle("Fly", { Title = "Fly", Default = false, Callback = function(on) print(on) end })
-Section:AddSlider("Speed", { Title = "Speed", Min = 16, Max = 250, Default = 16, Callback = print })
+local Section = Main:AddSection("Interface")
+Section:AddToggle("Preview", { Title = "Live preview", Default = false })
+Section:AddSlider("Intensity", { Title = "Intensity", Min = 0, Max = 100, Default = 50 })
 ```
 Components added to a Tab or a Section behave the same. The optional first argument is a unique id; with an id the component is available at `Window.Options[id]` and its value lives in `Zeta.Config`.
 
 ## 4. Read state, react to changes
 ```lua
-local Fly = Window.Options.Fly
-print(Fly:GetValue())
-Fly:OnChanged(function(value) end)
-Fly:SetValue(true)
+local Preview = Window.Options.Preview
+Preview:OnChanged(function(value)
+    Zeta:Notify({ Title = value and "Preview on" or "Preview off", Type = "Info" })
+end)
+Preview:SetValue(true)
 ```
 Callbacks do not run at creation, only on value changes.
 

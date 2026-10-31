@@ -13,4 +13,6 @@ local note = Zeta:Notify({
 note:Close()
 note.Closed:Connect(function() end)
 ```
-Notifications stack at the bottom-right, are limited to 5 at a time (the oldest closes first) and follow the active theme and scale.
+Notifications stack at the bottom-right and follow the active theme and scale. The visible limit is at most five and decreases on shorter viewports; the oldest notification closes first.
+
+`Type` accepts `Info`, `Success`, `Warning`, or `Error`. The returned notification supports `Close()` and a `Closed` signal. `Duration = 0` keeps it visible until it is closed.

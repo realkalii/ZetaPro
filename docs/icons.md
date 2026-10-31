@@ -52,7 +52,7 @@ Returns built-in Lucide names, sorted alphabetically.
 ```lua
 Zeta:RegisterIconProvider("Mine", function(name)
     if name == "logo" then
-        return { Type = "Image", Source = "rbxassetid://123", Tint = true }
+        return { Type = "Image", Source = "rbxassetid://18505728250", Tint = false }
     end
     return nil
 end)
@@ -65,25 +65,29 @@ The active custom provider is tried first; if it returns `nil`, ZETA Pro checks 
 
 ```lua
 Section:AddButton({
-    Title = "Custom Icon",
-    Icon = { Type = "Image", Source = "rbxassetid://123", Tint = false },
-    Callback = function() print("Button clicked") end,
+    Title = "Open community",
+    Icon = { Type = "Image", Source = "rbxassetid://18505728250", Tint = false },
+    Callback = function()
+        Zeta:Notify({ Title = "Discord", Content = "See the Home invite card.", Type = "Info" })
+    end,
 })
 ```
 
-`Tint = true` uses the current theme color. `Tint = false` keeps the original image colors. Replace `123` with a valid Roblox asset ID.
+`Tint = true` multiplies the image color by the current theme color. `Tint = false` keeps the original image colors. Use a monochrome image for reliable tinting.
 
 ## Remote icons
 
 ```lua
 Section:AddButton({
-    Title = "Remote Icon",
-    Icon = { Type = "Url", Source = "https://example.com/icon.png", Tint = false },
-    Callback = function() print("Button clicked") end,
+    Title = "Project logo",
+    Icon = { Type = "Url", Source = "https://raw.githubusercontent.com/realkalii/ZetaPro/main/assets/screenshots/logo.png", Tint = false },
+    Callback = function()
+        Zeta:Notify({ Title = "Project logo", Type = "Info" })
+    end,
 })
 ```
 
-The example URL is a placeholder. Only HTTPS PNG files up to 256 KB are accepted. HTTP access, filesystem access, and `getcustomasset` (or supported equivalent) are required. Successful images are cached in `ZetaPro/icons/`, and failed images use a built-in fallback icon.
+Only HTTPS PNG files up to 256 KB are accepted. HTTP access, filesystem access, and `getcustomasset` (or supported equivalent) are required. Successful images are cached in `ZetaPro/icons/`, and failed images use a built-in fallback icon.
 
 ## Hot swap
 

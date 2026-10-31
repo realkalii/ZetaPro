@@ -14,7 +14,7 @@
 | `Zeta:SetScale(n)` | | 0.5 to 2 |
 | `Zeta:RegisterComponent(name, factory)` | | Adds `Tab:Add<Name>` |
 | `Zeta:SetDebug(bool)` | | Verbose logs |
-| `Zeta:GetVersion()` | string | `"1.0.0"` |
+| `Zeta:GetVersion()` | string | `"1.0.3"` |
 | `Zeta:GetStats()` | `{Windows, Binds, Guis, Notifications}` | For tests |
 | `Zeta:Unload()` | | Destroys everything |
 
@@ -24,15 +24,15 @@ Fields: `Zeta.Icons`, `Zeta.Config`, `Zeta.State`, `Zeta.Signal`, `Zeta.Capabili
 Parameters: `Title: string`, `Icon: string?` (or icon table). Returns: `Tab`.
 
 ## Tab / Section
-`AddSection(title) -> Section`; `Add<Component>([id], config) -> Component`; `Select()`, `Deselect()`, `SetTitle(text)`, `SetIcon(icon)`, `Destroy()`.
+`AddSection(title, options?) -> Section`; `Add<Component>([id], config) -> Component`; `Select()`, `Deselect()`, `SetTitle(text)`, `SetIcon(icon)`, `Destroy()`. Section options are `Collapsible` and `DefaultExpanded`. Sections also support `IsExpanded()`, `Expand()`, `Collapse()`, `Toggle()`, `SetTitle(text)`, `SetVisible(bool)`, and `Destroy()`.
 
 ## Components (shared)
 `GetValue()`, `SetValue(v)`, `OnChanged(fn) -> Connection`, `SetTitle(text)`, `SetDescription(text)`, `SetIcon(icon \| nil)`, `SetVisible(bool)`, `SetEnabled(bool)`, `SetTooltip(text)`, `Destroy()`.
-Config fields accepted by all: `Title`, `Description`, `Icon`, `Tooltip`, `Visible`, `Enabled`.
+Shared config fields: `Title`, `Description`, `Icon`, `Tooltip`, `SearchKeywords`, `Visible`, `Enabled`. Paragraph, Label, and Divider have their own narrower configs.
 
 | Component | Config | Extra methods |
 |---|---|---|
-| Button | `Callback` | `Fire`, `SetCallback` |
+| Button | `Callback`, `ButtonText` | `Fire`, `SetCallback`, `SetButtonText` |
 | Toggle | `Default: boolean`, `Callback(bool)` | |
 | Slider | `Min, Max, Default, Increment, Rounding, Callback(number)` | |
 | Dropdown | `Values, Multi, Default, Callback(value \| map)` | `SetValues` |
@@ -48,20 +48,14 @@ Config fields accepted by all: `Title`, `Description`, `Icon`, `Tooltip`, `Visib
 UI state lives inside components; application state lives in `Zeta.Config` (bound by component id); persistence is separate and optional.
 
 ## Zeta.Config
-`Set(key, value)`, `Get(key)`, `Has(key)`, `Export() -> table`, `Import(table)`, `Reset()`, `Serialize() -> json`, `Deserialize(json)`, `Save(name)`, `Load(name)` (the last two need `Capabilities.FileSystem` and return `false, reason` otherwise), `Changed` signal. Supported values: boolean, number, string, Color3, Enum items, tables.
+`Register(key, default)`, `Set(key, value)`, `Get(key)`, `Has(key)`, `Export() -> table`, `Import(table)`, `Reset()`, `Wipe()`, `Serialize() -> json`, `Deserialize(json)`, `Save(name)`, `Load(name)` (the last two need `Capabilities.FileSystem` and return `false, reason` otherwise), `Changed` signal. Supported values: boolean, number, string, Color3, Enum items, tables.
 
 ## Zeta.Capabilities
-`Http`, `FileSystem`, `Clipboard`, `Touch`, `Keyboard`, `Drawing`. Everything optional degrades gracefully.
+`Http`, `FileSystem`, `Clipboard`, `Touch`, `Keyboard`, `Drawing`, `GetExecutorName()`, and `SetClipboard(text)`. File and clipboard operations depend on executor support.
 
 ## Zeta.Signal
 `Signal.new()`, `:Connect(fn)`, `:Once(fn)`, `:Fire(...)`, `:Destroy()`.
 
 ## Custom components
-```lua
-Zeta:RegisterComponent("Stepper", function(ctx, id, config)
-    local self = Zeta.Component.New(ctx, MyClass, "Stepper", id, config, { RightWidth = 90 })
-    -- build UI inside self.Right, register everything in self.Cleanup
-    return self
-end)
-Tab:AddStepper("Count", { Title = "Count" })
-```
+
+`Zeta:RegisterComponent(name, factory)` registers `Tab:Add<Name>` and `Section:Add<Name>`. A factory receives the component context, optional id, and config. Use `Zeta.Component.New(ctx, class, kind, id, config, layout)` for the shared component lifecycle; see the built-in components for a complete factory pattern.
