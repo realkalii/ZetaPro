@@ -43,9 +43,9 @@ This keeps your script on that version until you manually change the tag.
 
 ## Links
 
-- For the full API, examples and guides, see the [documentation](https://github.com/realkalii/ZetaPro/tree/main/docs).
+- For the full API, examples and guides, see the [documentation](https://realkalii.github.io/ZetaPro-docs).
 
-- Join our [discord community](https://discord.gg/9EPXws3Ybg)
+- Join our [discord community](https://discord.gg/HCE8KHzzDn)
 
 ---
 
