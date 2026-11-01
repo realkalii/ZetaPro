@@ -114,10 +114,35 @@ return function(import)
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1, 1),
 				Image = source or "",
+				ScaleType = Enum.ScaleType.Fit,
 				Parent = container,
 			})
 			tinted = tint == true
 			return image
+		end
+
+		local function fallback()
+			clear()
+			local spec = Providers.Fallback
+			if spec then
+				newImage(spec.Source, spec.Tint)
+			end
+			paint()
+		end
+
+		local function verifyImage(mine)
+			local target = image
+			task.spawn(function()
+				local loaded = false
+				local ok = pcall(function()
+					game:GetService("ContentProvider"):PreloadAsync({ target }, function(_, status)
+						if status == Enum.AssetFetchStatus.Success then loaded = true end
+					end)
+				end)
+				if mine == ticket and container.Parent and target == image and (not ok or not loaded) then
+					fallback()
+				end
+			end)
 		end
 
 		local function draw(newSpec)
@@ -142,6 +167,9 @@ return function(import)
 				drawVector(resolved)
 			elseif resolved.Type == "Image" then
 				newImage(resolved.Source, resolved.Tint)
+				if not resolved.Name then
+					verifyImage(mine)
+				end
 			else
 				newImage(nil, resolved.Tint)
 				Providers.LoadUrl(resolved.Source, function(asset)
@@ -150,13 +178,9 @@ return function(import)
 					end
 					if asset and image then
 						image.Image = asset
+						verifyImage(mine)
 					elseif not asset then
-						clear()
-						local fallback = Providers.Fallback
-						if fallback then
-							newImage(fallback.Source, fallback.Tint)
-						end
-						paint()
+						fallback()
 					end
 				end)
 			end
