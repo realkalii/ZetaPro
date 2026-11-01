@@ -4,7 +4,7 @@
 local Window = Zeta:CreateWindow({
     Title = "ZETA Pro",          -- string
     SubTitle = "v1.0.3",
-    Icon = "terminal",           -- icon?
+    Icon = "rbxassetid://18505728250",
     Size = UDim2.fromOffset(720, 510),
     TabWidth = 160,
     MinSize = Vector2.new(560, 360),
@@ -18,6 +18,8 @@ local Window = Zeta:CreateWindow({
 ```
 
 Home is created automatically and shows the player's profile, clock, executor, game, player count, and ping. A valid Discord invite adds a Copy card to Home. Custom tabs appear alongside Home.
+
+The official ZetaPro logo appears by default. `Icon` accepts a Roblox image asset ID in `rbxassetid://...` form and replaces that logo in the same header position. Missing, malformed, or unavailable images fall back to the official logo. Built-in icon names remain supported for tabs and components, not for the window logo.
 
 The window starts centered and can always be dragged and resized. The resize grip is always enabled; `Resize` is a legacy compatibility field and does not turn it off. Size is saved separately per window when executor file APIs are available and restored on the next run. Saved dimensions take priority over `Size` and are clamped to the configured bounds and viewport. Without file APIs, the configured or default size is used.
 
