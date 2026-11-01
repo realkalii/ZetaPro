@@ -133,11 +133,29 @@ return function(import)
 		if rightWidth > 0 then
 			local function reflow()
 				local available = math.max(0, frame.AbsoluteSize.X)
-				local effective = math.min(rightWidth, math.max(72, math.floor(available * 0.52)))
-				self.Right.Size = UDim2.fromOffset(effective, opts.RightHeight or 26)
-				left.Size = UDim2.new(1, -(effective + 12), 0, 0)
+				local controlHeight = opts.RightHeight or 26
+				if available < 320 and rightWidth >= 80 then
+					left.Size = UDim2.new(1, 0, 0, 0)
+					self.Right.AnchorPoint = Vector2.new(1, 0)
+					self.Right.Size = UDim2.fromOffset(math.min(rightWidth, math.max(64, available - 24)), controlHeight)
+					self.Right.Position = UDim2.new(1, -12, 0, left.AbsoluteSize.Y + 4)
+					frame.AutomaticSize = Enum.AutomaticSize.None
+					local height = math.max(opts.MinHeight or 52, left.AbsoluteSize.Y + controlHeight + 12)
+					if frame.Size.Y.Offset ~= height then
+						frame.Size = UDim2.new(1, 0, 0, height)
+					end
+				else
+					local effective = math.min(rightWidth, math.max(72, math.floor(available * 0.4)))
+					left.Size = UDim2.new(1, -(effective + 12), 0, 0)
+					self.Right.AnchorPoint = Vector2.new(1, 0.5)
+					self.Right.Position = UDim2.new(1, -10, 0.5, 0)
+					self.Right.Size = UDim2.fromOffset(effective, controlHeight)
+					frame.AutomaticSize = Enum.AutomaticSize.Y
+					frame.Size = UDim2.new(1, 0, 0, opts.MinHeight or 52)
+				end
 			end
 			cleanup:Add(frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(reflow))
+			cleanup:Add(left:GetPropertyChangedSignal("AbsoluteSize"):Connect(reflow))
 			reflow()
 		end
 
@@ -261,7 +279,7 @@ return function(import)
 				self._icon:Set(nil)
 			end
 			holder.Visible = false
-			self._textCol.Size = UDim2.new(1, 0, 0, 0)
+			self._textCol.Size = UDim2.new(1, -22, 0, 0)
 			return
 		end
 		if self._icon then
@@ -270,7 +288,7 @@ return function(import)
 			self._icon = Icons.Create(holder, spec, { Size = 16, Color = "MutedText", Cleanup = self.Cleanup })
 		end
 		holder.Visible = true
-		self._textCol.Size = UDim2.new(1, -24, 0, 0)
+		self._textCol.Size = UDim2.new(1, -49, 0, 0)
 	end
 
 	function Base:SetVisible(visible)

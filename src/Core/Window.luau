@@ -46,8 +46,8 @@ return function(import)
 		Input.Init()
 
 		local gui = cleanup:Add(Utility.NewScreenGui("ZetaPro_Window", 100))
-		gui.IgnoreGuiInset = true
-		gui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+		gui.IgnoreGuiInset = false
+		gui.ScreenInsets = Enum.ScreenInsets.CoreUISafeInsets
 		self.Gui = gui
 		local size = WindowSize.Load(config, self.MinSize, self.MaxSize) or config.Size or UDim2.fromOffset(650, 455)
 
@@ -91,7 +91,7 @@ return function(import)
 			BackgroundTransparency = 1,
 			Position = UDim2.fromOffset(18, 0),
 			Size = UDim2.new(0, 0, 1, 0),
-			AutomaticSize = Enum.AutomaticSize.X,
+			ClipsDescendants = true,
 			Parent = topbar,
 		})
 		Widgets.List(titles, 8, {
@@ -106,27 +106,32 @@ return function(import)
 			Parent = brand, Text = "ZΞ", Bold = true, TextSize = 20,
 			TextXAlignment = Enum.TextXAlignment.Center, Size = UDim2.fromScale(1, 1),
 		})
+		local requestedLogo = type(config.Icon) == "string" and string.match(config.Icon, "^rbxassetid://[1-9]%d*$") and config.Icon or nil
 		local brandImage = Utility.Create("ImageLabel", {
-			Name = "OriginalLogo", BackgroundTransparency = 1,
-			Image = Design.Logo, ImageTransparency = 1, ScaleType = Enum.ScaleType.Fit,
+			Name = "Logo", BackgroundTransparency = 1,
+			Image = requestedLogo or Design.Logo, ImageTransparency = 1, ScaleType = Enum.ScaleType.Fit,
 			Size = UDim2.fromScale(1, 1), Parent = brand,
 		})
 		cleanup:Add(task.spawn(function()
-			local loaded = false
-			local ok = pcall(function()
-				game:GetService("ContentProvider"):PreloadAsync({ brandImage }, function(_, status)
-					if status == Enum.AssetFetchStatus.Success then loaded = true end
+			local function loadLogo(source)
+				brandImage.Image = source
+				local loaded = false
+				local ok = pcall(function()
+					game:GetService("ContentProvider"):PreloadAsync({ brandImage }, function(_, status)
+						if status == Enum.AssetFetchStatus.Success then loaded = true end
+					end)
 				end)
-			end)
-			if ok and loaded and brandImage.Parent then
+				return ok and loaded
+			end
+			local loaded = loadLogo(requestedLogo or Design.Logo)
+			if not loaded and requestedLogo and brandImage.Parent then
+				loaded = loadLogo(Design.Logo)
+			end
+			if loaded and brandImage.Parent then
 				brandImage.ImageTransparency = 0
 				brandFallback.Visible = false
 			end
 		end))
-		if config.Icon then
-			local icon = Icons.Create(titles, config.Icon, { Size = 16, Color = "Text", Cleanup = cleanup })
-			icon.Instance.LayoutOrder = 0
-		end
 		self._titleLabel = Widgets.Text(cleanup, {
 			Name = "Title",
 			Parent = titles,
@@ -190,6 +195,8 @@ return function(import)
 				self:Destroy()
 			end)
 		end
+		self._controlsWidth = controlsWidth
+		self._titles = titles
 
 		local searchBox = Widgets.Surface(cleanup, {
 			Name = "Search",
@@ -201,6 +208,7 @@ return function(import)
 			AnchorPoint = Vector2.new(1, 0.5),
 			Position = UDim2.new(1, -(controlsWidth + 20), 0.5, 0),
 			Size = UDim2.fromOffset(170, 32),
+			ClipsDescendants = true,
 		})
 		self._searchBox = searchBox
 		Icons.Create(searchBox, "search", { Size = 15, Position = UDim2.fromOffset(10, 8.5), Cleanup = cleanup })
@@ -210,6 +218,9 @@ return function(import)
 			Parent = searchBox,
 			PlaceholderText = "Search...",
 			ClearTextOnFocus = false,
+			MultiLine = false,
+			TextWrapped = false,
+			ClipsDescendants = true,
 			Position = UDim2.fromOffset(30, 0),
 			Size = UDim2.new(1, -38, 1, 0),
 		})
@@ -609,13 +620,23 @@ return function(import)
 			tab:_SetCompact(compact)
 		end
 		if self.Home then self.Home:_SetCompact(compact) end
-		self._searchBox.Visible = self._searchEnabled
-		self._titleLabel.Visible = width >= 390
-		self._subtitleLabel.Visible = self._subtitleLabel.Text ~= "" and width >= 560
+		self._searchBox.Visible = self._searchEnabled and width >= 280
+		if not self._searchBox.Visible then
+			self._resultsFrame.Visible = false
+		end
+		local searchWidth = self._searchBox.Visible and math.clamp(math.floor(width * 0.27), 90, 190) or 0
+		local headerEnd = width - self._controlsWidth - 20 - (self._searchBox.Visible and searchWidth + 12 or 0)
+		local titleSpace = math.max(0, headerEnd - 18 - 40 - 16)
+		self._titles.Size = UDim2.fromOffset(math.max(40, headerEnd - 18), TOPBAR)
+		self._titleLabel.Visible = titleSpace >= 54
+		self._subtitleLabel.Visible = self._subtitleLabel.Text ~= "" and titleSpace >= 220
 		self._titleLabel.AutomaticSize = Enum.AutomaticSize.None
 		self._titleLabel.TextTruncate = Enum.TextTruncate.AtEnd
-		self._titleLabel.Size = UDim2.fromOffset(math.clamp(width - (self._searchBox.Visible and 300 or 100), 60, 140), TOPBAR)
-		self._searchBox.Size = UDim2.fromOffset(math.clamp(width - 255, 120, 170), 32)
+		self._titleLabel.Size = UDim2.fromOffset(math.min(titleSpace, self._subtitleLabel.Visible and 140 or titleSpace), TOPBAR)
+		self._subtitleLabel.AutomaticSize = Enum.AutomaticSize.None
+		self._subtitleLabel.TextTruncate = Enum.TextTruncate.AtEnd
+		self._subtitleLabel.Size = UDim2.fromOffset(math.max(0, titleSpace - 148), TOPBAR)
+		self._searchBox.Size = UDim2.fromOffset(searchWidth, 32)
 		self._resultsFrame.Size = UDim2.fromOffset(math.min(300, width - 20), 0)
 	end
 
